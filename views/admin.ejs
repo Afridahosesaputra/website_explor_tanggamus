@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/Gambar/logo-eksplor-tanggamus.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .admin-page {
+            max-width: 1300px;
+            margin: 100px auto 60px;
+            padding: 0 24px;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            padding: 24px 32px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-glow);
+        }
+        .table-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 40px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        .data-table th, .data-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.9rem;
+        }
+        .data-table th {
+            background: rgba(6, 14, 34, 0.95);
+            color: var(--blue-neon);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        .data-table tr:hover {
+            background: rgba(37, 99, 235, 0.08);
+        }
+        .dest-thumb {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .btn-action-edit {
+            background: rgba(37, 99, 235, 0.2);
+            border: 1px solid var(--blue-neon);
+            color: var(--blue-ice);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-action-edit:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-action-del {
+            background: rgba(220, 38, 38, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #f87171;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-action-del:hover {
+            background: rgba(220, 38, 38, 0.4);
+            color: #fff;
+        }
+    </style>
+</head>
+<body style="background:var(--bg-main);">
+
+    <!-- NAVBAR ADMIN -->
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <div class="logo-emblem">
+                    <img src="/Gambar/logo-eksplor-tanggamus.png" alt="Logo" class="nav-logo-img">
+                </div>
+                <div class="logo-text-wrap">
+                    <span class="logo-text">Eksplor <span class="logo-accent">Tanggamus</span></span>
+                    <span class="logo-tagline">Panel Pengelolaan Database SQLite</span>
+                </div>
+            </a>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <a href="/" class="btn-secondary-hero" style="padding:8px 18px; font-size:0.85rem; text-decoration:none;">
+                    ← Kembali ke Website
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="admin-page">
+        <!-- HEADER ADMIN -->
+        <div class="admin-header">
+            <div>
+                <span class="section-eyebrow">⚙️ SQLite & Prisma Management</span>
+                <h1 style="font-family:'DM Serif Display',serif; font-size:2rem; color:#fff; margin:4px 0 8px;">Pusat Data Wisata Tanggamus</h1>
+                <p style="color:var(--text-secondary); font-size:0.95rem;">Database aktif: <code>dev.db</code> (SQLite) · Status Koneksi: <strong style="color:var(--blue-neon);">Terhubung</strong></p>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <a href="/api/export/destinations?format=json" class="btn-secondary-hero" download style="padding:9px 15px; font-size:0.84rem; text-decoration:none;">
+                    📥 Unduh JSON
+                </a>
+                <a href="/api/export/destinations?format=csv" class="btn-secondary-hero" download style="padding:9px 15px; font-size:0.84rem; text-decoration:none;">
+                    📊 Unduh CSV
+                </a>
+                <button class="btn-secondary-hero" onclick="handleResetDatabase()" style="padding:9px 15px; font-size:0.84rem; color:#f87171; border-color:rgba(239,68,68,0.4);">
+                    🔄 Reset DB
+                </button>
+                <button class="btn-primary-hero" onclick="document.getElementById('modalAdd').style.display='flex'">
+                    <span>➕</span>
+                    <span>Tambah Destinasi</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- TABEL DESTINASI -->
+        <div class="table-box">
+            <div style="padding:16px 24px; border-bottom:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                <div>
+                    <h3 style="color:#fff; font-size:1.15rem; margin:0 0 4px;">Daftar Destinasi Wisata (<%= destinations.length %> Data)</h3>
+                    <span style="font-size:0.85rem; color:var(--blue-ice);">Tabel <code>Destination</code></span>
+                </div>
+                <div style="width:320px; max-width:100%;">
+                    <input type="text" id="adminSearch" placeholder="🔍 Cari nama, kategori, lokasi..." oninput="filterAdminTable()" style="width:100%; padding:8px 16px; background:rgba(6,14,34,0.85); border:1px solid var(--border-subtle); border-radius:var(--radius-pill); color:#fff; font-size:0.85rem;">
+                </div>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="data-table" id="destTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Foto</th>
+                            <th>Kode</th>
+                            <th>Nama Destinasi</th>
+                            <th>Kategori</th>
+                            <th>Kecamatan / Lokasi</th>
+                            <th>Harga Tiket</th>
+                            <th>Rating</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% destinations.forEach((d, i) => { %>
+                            <tr id="row-<%= d.id %>">
+                                <td><%= i + 1 %></td>
+                                <td>
+                                    <img src="/Gambar/<%= d.image %>" alt="<%= d.name %>" class="dest-thumb" onerror="this.src='/Gambar/batutegi.jpg'">
+                                </td>
+                                <td><code style="color:var(--blue-neon);"><%= d.code %></code></td>
+                                <td><a href="/destinasi/<%= d.id %>" target="_blank" style="color:#fff; text-decoration:none; font-weight:700;"><%= d.name %> ↗</a></td>
+                                <td><span class="rec-tag">🔷 <%= d.category %></span></td>
+                                <td>📍 <%= d.location %></td>
+                                <td><strong style="color:#fff;"><%= formatRupiah(d.ticketPrice) %></strong></td>
+                                <td>⭐ <%= d.rating %></td>
+                                <td>
+                                    <div style="display:flex; gap:6px;">
+                                        <button class="btn-action-edit" onclick='bukaModalEdit(<%- JSON.stringify(d).replace(/'/g, "\\'") %>)'>
+                                            ✏️ Edit
+                                        </button>
+                                        <button class="btn-action-del" onclick="hapusDestinasi(<%= d.id %>, '<%= d.name %>')">
+                                            🗑️ Hapus
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TABEL ULASAN PENGUNJUNG -->
+        <div class="table-box">
+            <div style="padding:20px 24px; border-bottom:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="color:#fff; font-size:1.15rem;">Daftar Ulasan Pengunjung (<%= reviews.length %> Data)</h3>
+                <span style="font-size:0.85rem; color:var(--blue-ice);">Tabel <code>Review</code></span>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Pengunjung</th>
+                            <th>Kota Asal</th>
+                            <th>Rating</th>
+                            <th>Isi Ulasan</th>
+                            <th>Waktu Kirim</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reviews.forEach((r, i) => { %>
+                            <tr>
+                                <td><%= i + 1 %></td>
+                                <td><strong><%= r.author %></strong></td>
+                                <td>📍 <%= r.city %></td>
+                                <td><%= '⭐'.repeat(r.rating) %></td>
+                                <td style="max-width:380px; color:var(--text-secondary);">"<%= r.comment %>"</td>
+                                <td style="color:var(--text-muted); font-size:0.8rem;"><%= formatDate(r.createdAt) %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH DESTINASI KE DATABASE -->
+    <div class="modal" id="modalAdd" style="display:none; align-items:center; justify-content:center;">
+        <div class="modal-card" style="max-width:600px;">
+            <button class="modal-close" onclick="document.getElementById('modalAdd').style.display='none'">✕</button>
+            <h3 style="font-size:1.4rem; color:#fff; margin-bottom:14px;">➕ Tambah Destinasi ke Database</h3>
+            
+            <form onsubmit="handleCreateDestination(event)" style="display:flex; flex-direction:column; gap:14px;">
+                <div>
+                    <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Nama Destinasi Wisata</label>
+                    <input type="text" id="newName" required placeholder="Contoh: Air Terjun Jarum Lebu" style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff;">
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div>
+                        <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Kategori</label>
+                        <select id="newCategory" style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff;">
+                            <option value="Pantai">Pantai</option>
+                            <option value="Air Terjun">Air Terjun</option>
+                            <option value="Alam">Alam</option>
+                            <option value="Nongkrong">Nongkrong & Kafe</option>
+                            <option value="Petualangan">Petualangan</option>
+                            <option value="Edukasi">Edukasi</option>
+                            <option value="Taman Kota">Taman Kota</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Harga Tiket (Rp)</label>
+                        <input type="number" id="newPrice" required placeholder="15000" style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff;">
+                    </div>
+                </div>
+                <div>
+                    <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Lokasi / Kecamatan</label>
+                    <input type="text" id="newLocation" required placeholder="Kecamatan Gisting, Tanggamus" style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff;">
+                </div>
+                <div>
+                    <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Deskripsi Keindahan</label>
+                    <textarea id="newDescription" required rows="3" placeholder="Tuliskan daya tarik utama dan keistimewaan tempat ini..." style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff; resize:none;"></textarea>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div>
+                        <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Latitude</label>
+                        <input type="text" id="newLat" value="-5.4500" style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Longitude</label>
+                        <input type="text" id="newLng" value="104.7500" style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff;">
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary-hero" style="justify-content:center; margin-top:8px;">
+                    Simpan ke SQLite Database
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT DESTINASI -->
+    <div class="modal" id="modalEdit" style="display:none; align-items:center; justify-content:center;">
+        <div class="modal-card" style="max-width:620px;">
+            <button class="modal-close" onclick="document.getElementById('modalEdit').style.display='none'">✕</button>
+            <h3 style="font-size:1.4rem; color:#fff; margin-bottom:14px;">✏️ Perbarui Data Destinasi</h3>
+            
+            <form onsubmit="handleUpdateDestination(event)" style="display:flex; flex-direction:column; gap:14px;">
+                <input type="hidden" id="editId">
+                <div>
+                    <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Nama Destinasi Wisata</label>
+                    <input type="text" id="editName" required style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff;">
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div>
+                        <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Kategori</label>
+                        <select id="editCategory" style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff;">
+                            <option value="Pantai">Pantai</option>
+                            <option value="Air Terjun">Air Terjun</option>
+                            <option value="Alam">Alam</option>
+                            <option value="Nongkrong">Nongkrong & Kafe</option>
+                            <option value="Petualangan">Petualangan</option>
+                            <option value="Edukasi">Edukasi</option>
+                            <option value="Taman Kota">Taman Kota</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Harga Tiket (Rp)</label>
+                        <input type="number" id="editPrice" required style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff;">
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px;">
+                    <div>
+                        <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Lokasi / Kecamatan</label>
+                        <input type="text" id="editLocation" required style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Rating (1-5)</label>
+                        <input type="number" step="0.1" min="1" max="5" id="editRating" required style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff;">
+                    </div>
+                </div>
+                <div>
+                    <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Deskripsi Keindahan</label>
+                    <textarea id="editDescription" required rows="3" style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff; resize:none;"></textarea>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div>
+                        <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Latitude</label>
+                        <input type="text" id="editLat" style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:4px;">Longitude</label>
+                        <input type="text" id="editLng" style="width:100%; padding:10px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff;">
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" id="editIsRecommended" style="width:18px; height:18px; accent-color:var(--primary);">
+                    <label for="editIsRecommended" style="font-size:0.88rem; color:#fff; cursor:pointer;">Jadikan sebagai Rekomendasi Utama (Tampil di Highlight)</label>
+                </div>
+                <button type="submit" class="btn-primary-hero" style="justify-content:center; margin-top:8px;">
+                    💾 Simpan Perubahan ke Database
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // Live Filter Tabel Admin
+        function filterAdminTable() {
+            const query = (document.getElementById('adminSearch')?.value || '').toLowerCase();
+            const rows = document.querySelectorAll('#destTable tbody tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        // Buka Modal Edit dengan Data Terisi
+        function bukaModalEdit(dest) {
+            document.getElementById('editId').value = dest.id;
+            document.getElementById('editName').value = dest.name || '';
+            document.getElementById('editCategory').value = dest.category || 'Alam';
+            document.getElementById('editPrice').value = dest.ticketPrice || 0;
+            document.getElementById('editLocation').value = dest.location || '';
+            document.getElementById('editRating').value = dest.rating || 4.8;
+            document.getElementById('editDescription').value = dest.description || '';
+            document.getElementById('editLat').value = dest.latitude || -5.45;
+            document.getElementById('editLng').value = dest.longitude || 104.75;
+            document.getElementById('editIsRecommended').checked = Boolean(dest.isRecommended);
+            document.getElementById('modalEdit').style.display = 'flex';
+        }
+
+        // Submit Update Destinasi (PUT API)
+        async function handleUpdateDestination(e) {
+            e.preventDefault();
+            const id = document.getElementById('editId').value;
+            const name = document.getElementById('editName').value;
+            const category = document.getElementById('editCategory').value;
+            const ticketPrice = document.getElementById('editPrice').value;
+            const location = document.getElementById('editLocation').value;
+            const rating = document.getElementById('editRating').value;
+            const description = document.getElementById('editDescription').value;
+            const latitude = document.getElementById('editLat').value;
+            const longitude = document.getElementById('editLng').value;
+            const isRecommended = document.getElementById('editIsRecommended').checked;
+
+            try {
+                const res = await fetch(`/api/destinations/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name, category, ticketPrice, location, rating, description, latitude, longitude, isRecommended
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('✅ Data destinasi berhasil diperbarui di database!');
+                    setTimeout(() => window.location.reload(), 800);
+                } else {
+                    showToast('❌ ' + (data.message || 'Gagal memperbarui'));
+                }
+            } catch {
+                showToast('❌ Gagal menghubungi server.');
+            }
+        }
+
+        async function handleCreateDestination(e) {
+            e.preventDefault();
+            const name = document.getElementById('newName').value;
+            const category = document.getElementById('newCategory').value;
+            const ticketPrice = document.getElementById('newPrice').value;
+            const location = document.getElementById('newLocation').value;
+            const description = document.getElementById('newDescription').value;
+            const latitude = document.getElementById('newLat').value;
+            const longitude = document.getElementById('newLng').value;
+
+            try {
+                const res = await fetch('/api/destinations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name, category, ticketPrice, location, description, latitude, longitude,
+                        image: 'batutegi.jpg',
+                        facilities: ['Spot Foto', 'Parkir', 'Warung Makan'],
+                        rating: 4.8
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('✅ Destinasi berhasil ditambahkan ke database!');
+                    setTimeout(() => location.reload(), 800);
+                } else {
+                    showToast('❌ ' + data.message);
+                }
+            } catch (err) {
+                showToast('❌ Gagal menghubungi server');
+            }
+        }
+
+        async function hapusDestinasi(id, name) {
+            if (!confirm(`Apakah Anda yakin ingin menghapus "${name}" dari database?`)) return;
+
+            try {
+                const res = await fetch(`/api/destinations/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`🗑️ "${name}" berhasil dihapus dari database.`);
+                    document.getElementById(`row-${id}`)?.remove();
+                } else {
+                    showToast('❌ ' + data.message);
+                }
+            } catch {
+                showToast('❌ Gagal menghapus data.');
+            }
+        }
+
+        async function handleResetDatabase() {
+            if (!confirm('PERINGATAN: Apakah Anda yakin ingin mereset seluruh database dev.db ke data seeder awal? Seluruh perubahan manual akan dikembalikan ke data default.')) return;
+            showToast('⏳ Sedang mereset database dev.db...');
+            try {
+                const res = await fetch('/api/admin/reset-db', { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('✅ ' + data.message);
+                    setTimeout(() => window.location.reload(), 1200);
+                } else {
+                    showToast('❌ ' + data.message);
+                }
+            } catch {
+                showToast('❌ Gagal mereset database.');
+            }
+        }
+    </script>
+</body>
+</html>

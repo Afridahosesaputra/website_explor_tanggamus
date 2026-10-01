@@ -1,0 +1,175 @@
+<%- include('../partials/header') %>
+
+<div class="page-banner">
+    <span class="section-eyebrow">🎮 Tanggamus Arcade & Quest Zone</span>
+    <h1 style="font-family:'DM Serif Display',serif; font-size:clamp(2rem, 4vw, 3rem); color:#fff; margin:8px 0 14px;">
+        Zona Permainan Petualang
+    </h1>
+    <p style="color:var(--text-secondary); max-width:680px; margin:0 auto; font-size:1.05rem;">
+        Kumpulkan mutiara biru di game 60fps Kiluan Dolphin Surf, buktikan wawasan wisatamu di kuis penjelajah, dan dapatkan lencana keberuntungan!
+    </p>
+</div>
+
+<main style="padding:40px 24px 80px; background:radial-gradient(ellipse at bottom, #0a1b3d 0%, var(--bg-deep) 80%);">
+    <div class="game-container">
+        <!-- MODE SWITCHER -->
+        <div class="game-mode-bar">
+            <div class="game-mode-tabs">
+                <button class="game-tab active" data-game="dolphin">
+                    <span class="game-tab-icon">🐬</span>
+                    <div>
+                        <span class="game-tab-title">Kiluan Dolphin Surf</span>
+                        <span class="game-tab-sub">Arcade Wave Runner 60fps</span>
+                    </div>
+                </button>
+                <button class="game-tab" data-game="quiz">
+                    <span class="game-tab-icon">🧭</span>
+                    <div>
+                        <span class="game-tab-title">Kuis Penjelajah</span>
+                        <span class="game-tab-sub">Tantangan Trivia Wisata</span>
+                    </div>
+                </button>
+                <button class="game-tab" data-game="wheel">
+                    <span class="game-tab-icon">🎡</span>
+                    <div>
+                        <span class="game-tab-title">Roda Keberuntungan</span>
+                        <span class="game-tab-sub">Spin Reward Hadiah</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <div class="game-box-card">
+            <!-- 1. DOLPHIN GAME -->
+            <div class="game-view-panel active" id="panelGameDolphin">
+                <div class="game-hud-bar">
+                    <div class="hud-left">
+                        <div>
+                            <span class="hud-label">SKOR</span>
+                            <span class="hud-value" id="gameScore">0</span>
+                        </div>
+                        <div>
+                            <span class="hud-label">JARAK</span>
+                            <span class="hud-value" id="gameDistance">0 m</span>
+                        </div>
+                    </div>
+                    <div class="hud-right">
+                        <div>
+                            <span class="hud-label">🏆 REKOR TERBAIK</span>
+                            <span class="hud-value" id="gameHighScore">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-canvas-wrapper">
+                    <canvas id="dolphinCanvas" width="800" height="400"></canvas>
+
+                    <div class="game-overlay" id="gameStartOverlay">
+                        <div class="overlay-content">
+                            <div class="overlay-icon">🐬</div>
+                            <h3 class="overlay-title">Kiluan Dolphin Surf</h3>
+                            <p class="overlay-desc">Melompat dan berselancar melintasi ombak biru Tanggamus. Kumpulkan mutiara & bintang, hindari karang tajam!</p>
+                            <button class="btn-game-start" id="btnStartGame">Mulai Bermain ▶</button>
+                            <div style="margin-top:14px; font-size:0.8rem; color:var(--blue-ice);">
+                                Kontrol: <strong>Spasi / Klik / Sentuh Layar</strong> untuk melompat
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="game-overlay" id="gameOverOverlay" style="display:none;">
+                        <div class="overlay-content">
+                            <div class="overlay-icon">🌊</div>
+                            <h3 class="overlay-title">Petualangan Selesai!</h3>
+                            <div style="display:flex; justify-content:center; gap:24px; margin:20px 0;">
+                                <div><span style="display:block; font-size:0.75rem; color:var(--text-muted);">Skor Akhir:</span><strong id="finalScore" style="font-size:1.8rem; color:var(--blue-neon);">0</strong></div>
+                                <div><span style="display:block; font-size:0.75rem; color:var(--text-muted);">Jarak Tempuh:</span><strong id="finalDistance" style="font-size:1.8rem; color:#fff;">0 m</strong></div>
+                            </div>
+                            <button class="btn-game-start" id="btnRestartGame">Main Lagi 🔄</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align:center; margin-top:16px;">
+                    <button id="mobileTapBtn" class="btn-primary-hero" style="width:100%; justify-content:center; padding:16px;">
+                        LOMPAT / RENANG 🐬 (Klik / Ketuk di Sini)
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. QUIZ PANEL -->
+            <div class="game-view-panel" id="panelGameQuiz">
+                <div class="quiz-screen" id="quizStartScreen">
+                    <div style="font-size:3.5rem; margin-bottom:12px;">🏆</div>
+                    <h3 style="font-size:1.8rem; margin-bottom:10px;">Seberapa Paham Kamu Tentang Tanggamus?</h3>
+                    <p style="color:var(--text-secondary); max-width:540px; margin:0 auto 24px;">
+                        Jawab 5 pertanyaan seputar keindahan alam, budaya, dan misteri wisata di Kabupaten Tanggamus. Raih peringkat Penjelajah Sejati!
+                    </p>
+                    <button class="btn-game-start" id="btnStartQuiz">Mulai Kuis Sekarang →</button>
+                </div>
+
+                <div class="quiz-screen" id="quizActiveScreen" style="display:none;">
+                    <div class="quiz-header">
+                        <div>Pertanyaan <span id="qCurrent">1</span> dari 5</div>
+                        <div>⏱️ <span id="quizTimerVal">15</span>s</div>
+                        <div>Skor: <span id="quizScoreVal">0</span></div>
+                    </div>
+                    <div class="quiz-timer-bar">
+                        <div class="quiz-timer-fill" id="quizTimerFill" style="width:100%;"></div>
+                    </div>
+                    <div class="quiz-question-box">
+                        <h4 class="quiz-question-text" id="quizQuestionText">Pertanyaan memuat...</h4>
+                    </div>
+                    <div class="quiz-options-grid" id="quizOptionsGrid"></div>
+                    <div style="text-align:center; margin-top:16px;">
+                        <button id="btnLifeline5050" class="btn-secondary-hero" style="font-size:0.85rem; padding:8px 18px;">
+                            🪄 Bantuan 50:50 (<span id="lifelineCount">1x</span>)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="quiz-screen" id="quizResultScreen" style="display:none;">
+                    <div style="font-size:3.5rem; margin-bottom:10px;">🏆</div>
+                    <h3 style="font-size:1.8rem; margin-bottom:8px;">Luar Biasa, Penjelajah!</h3>
+                    <div style="margin:20px 0;">
+                        <div style="font-size:2.6rem; font-weight:800; color:var(--blue-neon);"><span id="quizFinalScore">0</span> Poin</div>
+                        <div style="color:var(--blue-ice); font-weight:700; font-size:1.1rem;" id="quizRankTitle">Penjelajah Sejati</div>
+                        <div style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">Benar <span id="quizCorrectCount">0/5</span> pertanyaan</div>
+                    </div>
+                    <button class="btn-game-start" id="btnRestartQuiz">Coba Kuis Lagi 🔄</button>
+                </div>
+            </div>
+
+            <!-- 3. WHEEL PANEL -->
+            <div class="game-view-panel" id="panelGameWheel">
+                <div class="wheel-section-wrap">
+                    <div style="text-align:center;">
+                        <div class="wheel-stage">
+                            <div class="wheel-pointer">▼</div>
+                            <canvas id="wheelCanvas" width="340" height="340"></canvas>
+                        </div>
+                        <button class="btn-spin-wheel" id="btnSpinWheel">PUTAR RODA! 🎡</button>
+                    </div>
+                    <div>
+                        <span class="section-eyebrow">🎁 Reward & Hadiah Eksklusif</span>
+                        <h3 style="font-size:1.6rem; color:#fff; margin-bottom:12px;">Roda Keberuntungan Wisata</h3>
+                        <p style="color:var(--text-secondary); line-height:1.7; margin-bottom:20px;">
+                            Putar roda keberuntungan untuk memenangkan lencana kehormatan penjelajah, tips rahasia spot Tanggamus, dan voucher virtual!
+                        </p>
+                        <div style="background:rgba(37,99,235,0.15); border:1px solid var(--border-glow); padding:20px; border-radius:14px;">
+                            <div style="font-weight:700; color:var(--blue-neon); margin-bottom:8px;">🌟 Hadiah Menarik:</div>
+                            <ul style="list-style:none; font-size:0.9rem; color:var(--text-secondary); display:flex; flex-direction:column; gap:8px;">
+                                <li>💎 Lencana Master Gigi Hiu</li>
+                                <li>🐬 Voucher Sewa Perahu Teluk Kiluan</li>
+                                <li>☕ Kopi Robusta Gisting Spesial</li>
+                                <li>💧 Kunci Spot Rahasia Way Lalaan</li>
+                                <li>⛰️ Gelar Penakluk Gunung Tanggamus</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('../partials/footer') %>

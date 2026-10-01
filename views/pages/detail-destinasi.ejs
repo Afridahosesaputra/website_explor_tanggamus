@@ -1,0 +1,348 @@
+<%- include('../partials/header') %>
+
+<div class="page-banner" style="padding:120px 24px 40px;">
+    <div style="max-width:1200px; margin:0 auto; text-align:left;">
+        <!-- BREADCRUMB -->
+        <nav aria-label="Breadcrumb" style="margin-bottom:16px;">
+            <ol style="list-style:none; padding:0; margin:0; display:flex; gap:8px; align-items:center; font-size:0.88rem; color:var(--text-muted); flex-wrap:wrap;">
+                <li><a href="/" style="color:var(--blue-ice); text-decoration:none;">Beranda</a></li>
+                <li style="color:var(--text-muted);">/</li>
+                <li><a href="/destinasi" style="color:var(--blue-ice); text-decoration:none;">Destinasi</a></li>
+                <li style="color:var(--text-muted);">/</li>
+                <li style="color:#fff; font-weight:600;"><%= destination.name %></li>
+            </ol>
+        </nav>
+
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+            <div>
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px; flex-wrap:wrap;">
+                    <span class="category" style="font-size:0.8rem;">🔷 <%= destination.category %></span>
+                    <span class="rating" style="font-size:0.85rem;">⭐ <%= destination.rating %> / 5.0</span>
+                    <% if (destination.isRecommended) { %>
+                        <span class="badge-rekomendasi" style="position:static; display:inline-block;">★ Rekomendasi Utama</span>
+                    <% } %>
+                    <span style="font-size:0.82rem; color:var(--text-muted);">Kode: <code style="color:var(--blue-neon);"><%= destination.code %></code></span>
+                </div>
+                <h1 style="font-family:'DM Serif Display',serif; font-size:clamp(2.2rem, 5vw, 3.4rem); color:#fff; margin:0 0 8px; line-height:1.15;">
+                    <%= destination.name %>
+                </h1>
+                <p style="color:var(--blue-ice); font-size:1.1rem; margin:0; display:flex; align-items:center; gap:6px;">
+                    <span>📍</span> <strong><%= destination.location %></strong> (Kecamatan <%= destination.district || 'Tanggamus' %>)
+                </p>
+            </div>
+            <div>
+                <a href="/destinasi" class="btn-secondary-hero" style="padding:10px 20px; font-size:0.88rem; text-decoration:none;">
+                    ← Katalog Destinasi
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main style="padding:40px 24px 80px; background:var(--bg-main);">
+    <div style="max-width:1200px; margin:0 auto;">
+        
+        <!-- HERO MEDIA & ACTION BAR -->
+        <div style="background:var(--bg-card); border:1px solid var(--border-glow); border-radius:var(--radius-xl); overflow:hidden; box-shadow:var(--shadow-card); margin-bottom:40px;">
+            <div style="position:relative; max-height:480px; overflow:hidden;">
+                <img src="/Gambar/<%= destination.image %>" alt="<%= destination.name %>" style="width:100%; height:480px; object-fit:cover; display:block;" onerror="this.src='/Gambar/batutegi.jpg'">
+                <div style="position:absolute; inset:0; background:linear-gradient(to top, rgba(2,6,23,0.85) 0%, transparent 60%);"></div>
+                <div style="position:absolute; bottom:24px; left:24px; right:24px; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:14px;">
+                    <div>
+                        <span style="font-size:0.82rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">Biaya Tiket Masuk</span>
+                        <div style="font-size:2rem; font-weight:800; color:#fff;">
+                            <%= destination.ticketPrice === 0 ? 'Gratis (Bebas Biaya)' : formatRupiah(destination.ticketPrice) %>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=<%= destination.latitude %>,<%= destination.longitude %>" target="_blank" rel="noopener" class="btn-primary-hero" style="text-decoration:none; padding:10px 20px; font-size:0.9rem;">
+                            🗺️ Rute Google Maps
+                        </a>
+                        <button class="btn-secondary-hero" onclick="shareDetailWa()" style="padding:10px 20px; font-size:0.9rem;">
+                            📲 Bagikan ke WhatsApp
+                        </button>
+                        <button class="btn-secondary-hero" onclick="toggleWishlist(event, <%= destination.id %>)" style="padding:10px 18px; font-size:0.9rem;">
+                            ❤️ Simpan Favorit
+                        </button>
+                        <button class="btn-secondary-hero" onclick="window.print()" style="padding:10px 18px; font-size:0.9rem;">
+                            🖨️ Cetak
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DETAIL CONTENT GRID (2 COLUMNS) -->
+        <div style="display:grid; grid-template-columns:1fr 360px; gap:36px; align-items:start;" class="detail-layout-grid">
+            
+            <!-- LEFT COLUMN: MAIN CONTENT -->
+            <div>
+                <!-- DESKRIPSI -->
+                <section style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:32px; margin-bottom:32px; box-shadow:var(--shadow-card);">
+                    <h3 style="color:#fff; font-size:1.4rem; margin:0 0 16px; display:flex; align-items:center; gap:8px;">
+                        <span>📖</span> Tentang Destinasi
+                    </h3>
+                    <p style="color:var(--text-secondary); line-height:1.85; font-size:1.05rem; margin:0 0 24px;">
+                        <%= destination.description %>
+                    </p>
+
+                    <!-- QUICK INFO BOXES -->
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-top:20px;">
+                        <div style="background:rgba(37,99,235,0.1); border:1px solid var(--border-glow); border-radius:12px; padding:16px;">
+                            <div style="font-size:0.8rem; color:var(--blue-neon); font-weight:700; margin-bottom:4px;">🕒 JAM OPERASIONAL</div>
+                            <div style="color:#fff; font-size:0.95rem; font-weight:600;"><%= destination.openHours || '08.00 - 17.00 WIB' %></div>
+                        </div>
+                        <div style="background:rgba(37,99,235,0.1); border:1px solid var(--border-glow); border-radius:12px; padding:16px;">
+                            <div style="font-size:0.8rem; color:var(--blue-neon); font-weight:700; margin-bottom:4px;">☀️ WAKTU TERBAIK</div>
+                            <div style="color:#fff; font-size:0.95rem; font-weight:600;"><%= destination.bestTime || 'Pagi & Sore Hari' %></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FASILITAS -->
+                <section style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:32px; margin-bottom:32px; box-shadow:var(--shadow-card);">
+                    <h3 style="color:#fff; font-size:1.4rem; margin:0 0 18px; display:flex; align-items:center; gap:8px;">
+                        <span>✨</span> Fasilitas & Sarana Prasarana
+                    </h3>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px;">
+                        <% if (destination.facilities && destination.facilities.length > 0) { %>
+                            <% destination.facilities.forEach(f => { %>
+                                <div style="display:flex; align-items:center; gap:10px; background:rgba(6,14,34,0.7); border:1px solid var(--border-subtle); padding:12px 16px; border-radius:10px;">
+                                    <span style="color:var(--blue-neon); font-weight:bold;">✓</span>
+                                    <span style="color:#fff; font-size:0.9rem;"><%= f %></span>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <div style="color:var(--text-muted); font-size:0.9rem;">Informasi fasilitas standar alam terbuka (Parkir & Warung warga).</div>
+                        <% } %>
+                    </div>
+                </section>
+
+                <!-- PETA LOKASI SATELIT INTERAKTIF MINI -->
+                <section style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:32px; margin-bottom:32px; box-shadow:var(--shadow-card);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+                        <h3 style="color:#fff; font-size:1.4rem; margin:0; display:flex; align-items:center; gap:8px;">
+                            <span>🛰️</span> Koordinat Satelit & Navigasi
+                        </h3>
+                        <a href="/peta" class="btn-layer-opt active" style="text-decoration:none; padding:6px 14px; font-size:0.8rem;">
+                            Buka Peta Besar →
+                        </a>
+                    </div>
+                    <div id="detailMiniMap" style="height:340px; border-radius:12px; overflow:hidden; border:1px solid var(--border-glow); background:#020617;"></div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; font-size:0.85rem; color:var(--text-muted);">
+                        <span>Koordinat: <code><%= destination.latitude %>, <%= destination.longitude %></code></span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=<%= destination.latitude %>,<%= destination.longitude %>" target="_blank" rel="noopener" style="color:var(--blue-ice); text-decoration:none;">
+                            Buka di Aplikasi Google Maps ↗
+                        </a>
+                    </div>
+                </section>
+
+                <!-- ULASAN PENGUNJUNG UNTUK DESTINASI INI -->
+                <section style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:32px; box-shadow:var(--shadow-card);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h3 style="color:#fff; font-size:1.4rem; margin:0 0 4px; display:flex; align-items:center; gap:8px;">
+                                <span>💬</span> Ulasan Wisatawan (<%= destination.reviews ? destination.reviews.length : 0 %>)
+                            </h3>
+                            <p style="color:var(--text-muted); font-size:0.88rem; margin:0;">Bagikan pengalaman berkesan Anda saat berkunjung ke <%= destination.name %>.</p>
+                        </div>
+                        <button class="btn-primary-hero" onclick="document.getElementById('detailReviewForm').scrollIntoView({behavior:'smooth'})" style="padding:8px 16px; font-size:0.85rem;">
+                            ✍️ Tulis Ulasan
+                        </button>
+                    </div>
+
+                    <!-- DAFTAR ULASAN -->
+                    <div style="display:flex; flex-direction:column; gap:16px; margin-bottom:32px;">
+                        <% if (destination.reviews && destination.reviews.length > 0) { %>
+                            <% destination.reviews.forEach(r => { %>
+                                <div style="background:rgba(6,14,34,0.6); border:1px solid var(--border-subtle); border-radius:12px; padding:18px;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                        <div style="display:flex; align-items:center; gap:10px;">
+                                            <div style="width:36px; height:36px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem;">
+                                                <%= r.avatar || r.author.substring(0, 2).toUpperCase() %>
+                                            </div>
+                                            <div>
+                                                <div style="color:#fff; font-weight:700; font-size:0.95rem;"><%= r.author %></div>
+                                                <div style="color:var(--text-muted); font-size:0.78rem;">📍 <%= r.city %></div>
+                                            </div>
+                                        </div>
+                                        <div style="color:#fbbf24; font-size:0.9rem;"><%= '⭐'.repeat(r.rating) %></div>
+                                    </div>
+                                    <p style="color:var(--text-secondary); line-height:1.6; font-size:0.92rem; margin:0;">
+                                        "<%= r.comment %>"
+                                    </p>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <div style="text-align:center; padding:30px; background:rgba(6,14,34,0.4); border-radius:12px; color:var(--text-muted);">
+                                Belum ada ulasan untuk destinasi ini. Jadilah yang pertama memberikan ulasan!
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <!-- FORM SUBMIT ULASAN DI HALAMAN DETAIL -->
+                    <div id="detailReviewForm" style="background:rgba(37,99,235,0.08); border:1px solid var(--border-glow); border-radius:14px; padding:24px;">
+                        <h4 style="color:#fff; font-size:1.1rem; margin:0 0 14px;">✍️ Tuliskan Ulasan untuk <%= destination.name %></h4>
+                        <form onsubmit="handleDetailReviewSubmit(event)" style="display:flex; flex-direction:column; gap:14px;">
+                            <input type="hidden" id="revDestId" value="<%= destination.id %>">
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                                <div>
+                                    <label style="display:block; font-size:0.82rem; color:var(--blue-ice); margin-bottom:4px;">Nama Lengkap</label>
+                                    <input type="text" id="revAuthor" required placeholder="Contoh: Budi Santoso" style="width:100%; padding:10px 14px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff; font-size:0.9rem;">
+                                </div>
+                                <div>
+                                    <label style="display:block; font-size:0.82rem; color:var(--blue-ice); margin-bottom:4px;">Kota Asal</label>
+                                    <input type="text" id="revCity" required placeholder="Contoh: Bandar Lampung" style="width:100%; padding:10px 14px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff; font-size:0.9rem;">
+                                </div>
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:0.82rem; color:var(--blue-ice); margin-bottom:4px;">Rating Pengalaman</label>
+                                <select id="revRating" style="width:100%; padding:10px 14px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff; font-size:0.9rem;">
+                                    <option value="5">⭐⭐⭐⭐⭐ 5 Bintang (Luar Biasa)</option>
+                                    <option value="4">⭐⭐⭐⭐ 4 Bintang (Sangat Bagus)</option>
+                                    <option value="3">⭐⭐⭐ 3 Bintang (Cukup Bagus)</option>
+                                    <option value="2">⭐⭐ 2 Bintang (Kurang)</option>
+                                    <option value="1">⭐ 1 Bintang (Perlu Ditingkatkan)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:0.82rem; color:var(--blue-ice); margin-bottom:4px;">Isi Ulasan & Pengalaman</label>
+                                <textarea id="revComment" required rows="3" placeholder="Ceritakan bagaimana keindahan suasana, pemandangan, dan akses menuju tempat ini..." style="width:100%; padding:10px 14px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:#fff; font-size:0.9rem; resize:none;"></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary-hero" style="justify-content:center; padding:12px; font-size:0.92rem;">
+                                Kirim Ulasan ke Database
+                            </button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+
+            <!-- RIGHT COLUMN: SIDEBAR -->
+            <aside style="display:flex; flex-direction:column; gap:24px;">
+                
+                <!-- CARD CUACA LOKAL -->
+                <div style="background:var(--bg-card); border:1px solid var(--border-glow); border-radius:var(--radius-xl); padding:24px; box-shadow:var(--shadow-card);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <span style="font-size:0.8rem; color:var(--blue-neon); font-weight:700;">🌤️ CUACA KECAMATAN</span>
+                        <a href="/cuaca" style="font-size:0.75rem; color:var(--blue-ice); text-decoration:none;">Detail →</a>
+                    </div>
+                    <% if (weather) { %>
+                        <div style="display:flex; align-items:center; gap:14px; margin-bottom:12px;">
+                            <span style="font-size:2.4rem;"><%= weather.icon %></span>
+                            <div>
+                                <div style="font-size:1.8rem; font-weight:800; color:#fff;"><%= weather.temp %>°C</div>
+                                <div style="font-size:0.85rem; color:var(--text-secondary);"><%= weather.condition %></div>
+                            </div>
+                        </div>
+                        <p style="font-size:0.82rem; color:var(--text-muted); margin:0; line-height:1.5;">
+                            Lokasi: <%= weather.regionName %>. <%= weather.recNote %>
+                        </p>
+                    <% } else { %>
+                        <div style="font-size:0.88rem; color:var(--text-secondary);">
+                            Cuaca cerah berawan di Tanggamus. Sangat cocok untuk eksplorasi wisata outdoor.
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- CARD ESTIMASI ANGGARAN QUICK -->
+                <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:24px; box-shadow:var(--shadow-card);">
+                    <h4 style="color:#fff; font-size:1.1rem; margin:0 0 10px; display:flex; align-items:center; gap:8px;">
+                        <span>🧮</span> Rencana Biaya Liburan
+                    </h4>
+                    <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.6; margin:0 0 16px;">
+                        Gunakan kalkulator budget kami untuk menghitung biaya transportasi dan akomodasi menuju <%= destination.name %>.
+                    </p>
+                    <a href="/biaya" class="btn-primary-hero" style="text-decoration:none; display:flex; justify-content:center; padding:10px; font-size:0.85rem;">
+                        Buka Kalkulator Biaya →
+                    </a>
+                </div>
+
+                <!-- DESTINASI TERKAIT LAINNYA -->
+                <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:24px; box-shadow:var(--shadow-card);">
+                    <h4 style="color:#fff; font-size:1.1rem; margin:0 0 16px; display:flex; align-items:center; gap:8px;">
+                        <span>🌟</span> Destinasi Serupa di Tanggamus
+                    </h4>
+                    <div style="display:flex; flex-direction:column; gap:14px;">
+                        <% relatedDestinations.forEach(item => { %>
+                            <a href="/destinasi/<%= item.id %>" style="display:flex; gap:12px; text-decoration:none; align-items:center; background:rgba(6,14,34,0.6); padding:10px; border-radius:10px; border:1px solid var(--border-subtle); transition:border 0.2s;" onmouseover="this.style.borderColor='var(--blue-neon)'" onmouseout="this.style.borderColor='var(--border-subtle)'">
+                                <img src="/Gambar/<%= item.image %>" alt="<%= item.name %>" style="width:60px; height:60px; border-radius:8px; object-fit:cover;" onerror="this.src='/Gambar/batutegi.jpg'">
+                                <div style="flex:1; min-width:0;">
+                                    <div style="color:#fff; font-weight:700; font-size:0.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><%= item.name %></div>
+                                    <div style="font-size:0.75rem; color:var(--blue-ice);">🔷 <%= item.category %> · ⭐ <%= item.rating %></div>
+                                    <div style="font-size:0.78rem; color:var(--text-muted);"><%= item.ticketPrice === 0 ? 'Gratis' : formatRupiah(item.ticketPrice) %></div>
+                                </div>
+                            </a>
+                        <% }) %>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+
+    </div>
+</main>
+
+<script>
+    function shareDetailWa() {
+        const text = encodeURIComponent("Yuk liburan ke <%= destination.name %> di <%= destination.location %>, Tanggamus! ⭐ Rating: <%= destination.rating %>. Cek info lengkapnya di: " + window.location.href);
+        window.open('https://api.whatsapp.com/send?text=' + text, '_blank');
+    }
+
+    async function handleDetailReviewSubmit(e) {
+        e.preventDefault();
+        const destinationId = document.getElementById('revDestId').value;
+        const author = document.getElementById('revAuthor').value;
+        const city = document.getElementById('revCity').value;
+        const rating = parseInt(document.getElementById('revRating').value, 10);
+        const comment = document.getElementById('revComment').value;
+
+        try {
+            const res = await fetch('/api/reviews', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ destinationId, author, city, rating, comment })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('✅ Ulasan Anda berhasil dikirim ke database!');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                showToast('❌ ' + (data.message || 'Gagal mengirim ulasan'));
+            }
+        } catch {
+            showToast('⚠️ Gagal mengirim ulasan.');
+        }
+    }
+
+    // Mini Map Satelit Inisialisasi
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof L !== 'undefined') {
+            const miniMap = L.map('detailMiniMap', {
+                center: [<%= destination.latitude %>, <%= destination.longitude %>],
+                zoom: 14,
+                scrollWheelZoom: false
+            });
+
+            // Layer Satelit Hybrid
+            L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                subdomains: ['0', '1', '2', '3'],
+                maxZoom: 20,
+                attribution: '&copy; Google Satellite'
+            }).addTo(miniMap);
+
+            const icon = L.divIcon({
+                className: 'custom-map-icon-wrapper',
+                html: `<div class="custom-map-pin">🔷</div>`,
+                iconSize: [38, 38],
+                iconAnchor: [19, 19]
+            });
+
+            L.marker([<%= destination.latitude %>, <%= destination.longitude %>], { icon })
+                .bindPopup(`<strong><%= destination.name %></strong><br><%= destination.location %>`)
+                .addTo(miniMap)
+                .openPopup();
+        }
+    });
+</script>
+
+<%- include('../partials/footer') %>

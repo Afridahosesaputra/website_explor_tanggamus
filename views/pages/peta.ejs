@@ -1,0 +1,68 @@
+<%- include('../partials/header') %>
+
+<div class="page-banner">
+    <span class="section-eyebrow">🗺️ Navigasi Geografis & Leaflet Engine</span>
+    <h1 style="font-family:'DM Serif Display',serif; font-size:clamp(2rem, 4vw, 3rem); color:#fff; margin:8px 0 14px;">
+        Peta Wisata Interaktif Tanggamus
+    </h1>
+    <p style="color:var(--text-secondary); max-width:680px; margin:0 auto; font-size:1.05rem;">
+        Pantau sebaran koordinat presisi seluruh destinasi wisata di Kabupaten Tanggamus. Dilengkapi fitur layer satelit dan garis rute jelajah tercepat.
+    </p>
+</div>
+
+<main style="padding:40px 24px 80px; background:var(--bg-main);">
+    <div class="peta-container">
+        <div class="peta-box-card" style="height:700px;">
+            <div class="peta-sidebar">
+                <div class="peta-sidebar-header">
+                    <span class="peta-sidebar-title">📍 Daftar Titik Destinasi (<%= destinations.length %>)</span>
+                    <div class="peta-filter-chips">
+                        <button class="peta-chip active" data-map-filter="all">Semua</button>
+                        <button class="peta-chip" data-map-filter="Nongkrong">☕ Nongkrong</button>
+                        <button class="peta-chip" data-map-filter="Pantai">🏖️ Pantai</button>
+                        <button class="peta-chip" data-map-filter="Alam">🌿 Alam</button>
+                        <button class="peta-chip" data-map-filter="Air Terjun">💧 Air Terjun</button>
+                        <button class="peta-chip chip-route" id="btnToggleRoute" onclick="toggleMapRouteLines()">🛣️ Rute Jelajah</button>
+                    </div>
+                </div>
+                <div class="peta-dest-list" id="petaDestList">
+                    <% destinations.forEach(item => { %>
+                        <div class="peta-card-item" id="petaCard<%= item.id %>" onclick="focusDestinationOnMap(<%= item.id %>)">
+                            <img src="/Gambar/<%= item.image %>" alt="<%= item.name %>" class="peta-card-thumb" onerror="this.src='/Gambar/batutegi.jpg'">
+                            <div class="peta-card-info">
+                                <span class="peta-card-title"><%= item.name %></span>
+                                <div class="peta-card-meta">
+                                    <span>🔷 <%= item.category %></span>
+                                    <span>•</span>
+                                    <span>⭐ <%= item.rating %></span>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+
+            <div class="peta-map-wrapper">
+                <div class="peta-map-topbar">
+                    <div class="peta-map-status">
+                        <span class="live-dot-pulse"></span>
+                        <span id="petaActiveName">🛰️ Citra Satelit Tanggamus — Siap Dijelajahi</span>
+                    </div>
+                    <div class="peta-layer-switcher">
+                        <button class="btn-layer-opt active" id="btnLayerSat">🛰️ Mode Satelit</button>
+                        <button class="btn-layer-opt" id="btnLayerDark">🗺️ Mode Peta Jalan</button>
+                    </div>
+                </div>
+                <div id="petaWisataMap" class="peta-leaflet-container"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    window.__INITIAL_DATA__ = {
+        destinations: <%- JSON.stringify(destinations) %>
+    };
+</script>
+
+<%- include('../partials/footer') %>

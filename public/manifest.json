@@ -1,0 +1,24 @@
+{
+  "name": "Eksplor Tanggamus — Surga Wisata Lampung",
+  "short_name": "Eksplor Tanggamus",
+  "description": "Panduan pariwisata modern terlengkap untuk mengeksplorasi seluruh pesona tersembunyi Kabupaten Tanggamus, Lampung.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/Gambar/logo-eksplor-tanggamus.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/Gambar/logo-eksplor-tanggamus.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

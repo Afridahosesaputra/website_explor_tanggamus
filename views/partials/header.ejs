@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'Eksplor Tanggamus — Surga Wisata Lampung' %></title>
+    <meta name="description" content="Temukan keindahan alam tersembunyi, pantai eksotis, dan petualangan seru di Kabupaten Tanggamus, Lampung. Panduan wisata terlengkap dan terpercaya.">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/Gambar/logo-eksplor-tanggamus.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .page-banner {
+            padding: 130px 24px 50px;
+            background: radial-gradient(ellipse at top, #0c2048 0%, var(--bg-main) 70%, var(--bg-deep) 100%);
+            text-align: center;
+            border-bottom: 1px solid var(--border-glow);
+            position: relative;
+            overflow: hidden;
+        }
+        .page-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- GLOW KURSOR BIRU -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- NAVBAR UTAMA (TEMA 1 WARNA BIRU) -->
+    <nav class="navbar <%= typeof currentPage !== 'undefined' && currentPage !== 'home' ? 'scrolled' : '' %>" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo" title="Eksplor Tanggamus — by <%= creator %>">
+                <div class="logo-emblem">
+                    <img src="/Gambar/logo-eksplor-tanggamus.png" alt="Logo Eksplor Tanggamus" class="nav-logo-img">
+                </div>
+                <div class="logo-text-wrap">
+                    <span class="logo-text">Eksplor <span class="logo-accent">Tanggamus</span></span>
+                    <span class="logo-tagline"><%= tagline %> · <span class="creator-tag">by <%= creator %></span></span>
+                </div>
+            </a>
+
+            <!-- MENU TERPISAH (MULTI-HALAMAN) -->
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'active' : '' %>">Beranda</a></li>
+                <li><a href="/destinasi" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'destinasi' ? 'active' : '' %>">Destinasi</a></li>
+                <li><a href="/peta" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'peta' ? 'active' : '' %>">🗺️ Peta Wisata</a></li>
+                <li><a href="/cuaca" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'cuaca' ? 'active' : '' %>">Cuaca</a></li>
+                <li><a href="/kuliner" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'kuliner' ? 'active' : '' %>">🍲 Kuliner</a></li>
+                <li><a href="/biaya" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'biaya' ? 'active' : '' %>">🧮 Biaya</a></li>
+                <li><a href="/game" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'game' ? 'active' : '' %>">🎮 Game</a></li>
+                <li><a href="/faq" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'faq' ? 'active' : '' %>">❓ FAQ</a></li>
+                <li><a href="/ulasan" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'ulasan' ? 'active' : '' %>">Ulasan</a></li>
+                <li><a href="/admin" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'admin' ? 'active' : '' %>" style="color:var(--blue-neon); font-weight:700;">⚙️ Admin</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="nav-search-btn" id="navSearchTrigger" onclick="openSpotlightSearch()" title="Pencarian Cepat (Ctrl + K)">
+                    <span>🔍</span>
+                    <span class="search-kbd">Ctrl K</span>
+                </button>
+                <div style="position:relative;">
+                    <button class="nav-audio-btn" id="navAudioBtn" onclick="toggleAudioPopover()" title="Pilihan Suara Alam Tanggamus">
+                        <span>🔊</span>
+                        <span id="audioLabel">Suara Alam</span>
+                    </button>
+                    <!-- AMBIENCE POPOVER -->
+                    <div class="audio-popover" id="audioPopover" style="display:none;">
+                        <div class="audio-popover-header">
+                            <span>🎧 Suara Alam Tanggamus</span>
+                            <button onclick="toggleAudioPopover()" style="background:none; border:none; color:#fff; font-size:1.1rem; cursor:pointer;">✕</button>
+                        </div>
+                        <div class="audio-options-list">
+                            <button class="audio-opt-btn" data-sound="waves" onclick="selectAmbienceSound('waves', this)">
+                                <span>🌊</span>
+                                <div>
+                                    <div class="sound-title">Ombak Pantai Kiluan</div>
+                                    <div class="sound-sub">Deburan ritmis samudra selatan</div>
+                                </div>
+                            </button>
+                            <button class="audio-opt-btn" data-sound="forest" onclick="selectAmbienceSound('forest', this)">
+                                <span>🌲</span>
+                                <div>
+                                    <div class="sound-title">Hutan & Kicauan Burung</div>
+                                    <div class="sound-sub">Angin sejuk Gunung Tanggamus</div>
+                                </div>
+                            </button>
+                            <button class="audio-opt-btn" data-sound="waterfall" onclick="selectAmbienceSound('waterfall', this)">
+                                <span>💧</span>
+                                <div>
+                                    <div class="sound-title">Air Terjun Way Lalaan</div>
+                                    <div class="sound-sub">Gemericik air pegunungan alami</div>
+                                </div>
+                            </button>
+                            <button class="audio-opt-btn sound-off" onclick="stopAmbienceSound()">
+                                <span>🔇</span>
+                                <div>
+                                    <div class="sound-title">Matikan Audio</div>
+                                    <div class="sound-sub">Hentikan efek suara</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button class="lang-switch-btn" id="langSwitchBtn" onclick="toggleLanguage()" title="Ganti Bahasa">
+                    <span id="langFlag">🇮🇩</span>
+                    <span id="langCode">ID</span>
+                </button>
+                <a href="/cuaca" class="nav-weather-pill" title="Prakiraan Cuaca Real-Time">
+                    <span class="nav-weather-pulse"></span>
+                    <span id="navWeatherIcon">🌤️</span>
+                    <span id="navWeatherTemp">29°C</span>
+                    <span class="nav-weather-city">Kota Agung</span>
+                </a>
+                <button class="btn-wishlist-nav" id="wishlistNavBtn" onclick="toggleWishlistPanel()" title="Daftar Favorit Saya">
+                    <span>❤️</span>
+                    <span class="wishlist-count" id="wishlistCount">0</span>
+                </button>
+                <a href="/destinasi" class="btn-nav-cta" style="text-decoration:none;">
+                    Jelajahi
+                </a>
+            </div>
+
+            <button class="hamburger" id="hamburger" aria-label="Menu navigasi">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- SPOTLIGHT SEARCH MODAL (CTRL + K) -->
+    <div class="spotlight-overlay" id="spotlightOverlay" onclick="closeSpotlightSearch(event)">
+        <div class="spotlight-card" onclick="event.stopPropagation()">
+            <div class="spotlight-header">
+                <span style="font-size:1.3rem;">🔍</span>
+                <input type="text" id="spotlightInput" placeholder="Cari destinasi, kuliner, cuaca, atau fitur..." autocomplete="off">
+                <button class="spotlight-esc" onclick="closeSpotlightSearch()">ESC</button>
+            </div>
+            <div class="spotlight-results" id="spotlightResults">
+                <!-- Diisi otomatis oleh JavaScript -->
+            </div>
+            <div class="spotlight-footer">
+                <span>Pintasan: <kbd>Ctrl</kbd> + <kbd>K</kbd></span>
+                <span>Navigasi: <kbd>ESC</kbd> untuk menutup</span>
+            </div>
+        </div>
+    </div>

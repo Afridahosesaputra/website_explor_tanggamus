@@ -1,0 +1,115 @@
+<%- include('../partials/header') %>
+
+<div class="page-banner">
+    <span class="section-eyebrow">🧮 Perencanaan Keuangan Liburan</span>
+    <h1 style="font-family:'DM Serif Display',serif; font-size:clamp(2rem, 4vw, 3rem); color:#fff; margin:8px 0 14px;">
+        Kalkulator Estimasi Biaya Wisata
+    </h1>
+    <p style="color:var(--text-secondary); max-width:680px; margin:0 auto; font-size:1.05rem;">
+        Rencanakan anggaran liburanmu ke Tanggamus secara presisi dan transparan berdasarkan durasi menginap, anggota rombongan, serta tipe transportasi.
+    </p>
+</div>
+
+<main style="padding:50px 24px 80px; background:var(--bg-deep);">
+    <div class="budget-container">
+        <div class="budget-card-box">
+            <div class="budget-form-grid">
+                <div class="budget-input-group">
+                    <label>🗓️ Durasi Liburan (Hari)</label>
+                    <input type="number" id="calcDays" value="2" min="1" max="14" oninput="calculateTripBudget()">
+                </div>
+                <div class="budget-input-group">
+                    <label>👥 Jumlah Rombongan (Orang)</label>
+                    <input type="number" id="calcPeople" value="2" min="1" max="30" oninput="calculateTripBudget()">
+                </div>
+                <div class="budget-input-group">
+                    <label>🏨 Pilihan Penginapan</label>
+                    <select id="calcStay" onchange="calculateTripBudget()">
+                        <option value="150000">Homestay Ramah Lokal (~Rp 150rb/malam)</option>
+                        <option value="350000">Villa / Resort Gisting (~Rp 350rb/malam)</option>
+                        <option value="50000">Tenda Camping Ground (~Rp 50rb/malam)</option>
+                        <option value="0">Tanpa Menginap (Pulang Pergi)</option>
+                    </select>
+                </div>
+                <div class="budget-input-group">
+                    <label>🚗 Moda Transportasi</label>
+                    <select id="calcTrans" onchange="calculateTripBudget()">
+                        <option value="75000">Sepeda Motor (~Rp 75rb bensin/hari)</option>
+                        <option value="250000">Mobil Pribadi / Sewa (~Rp 250rb/hari)</option>
+                        <option value="450000">Minibus Rombongan (~Rp 450rb/hari)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="budget-result-box">
+                <div style="font-size:0.95rem; color:var(--blue-ice);">💰 Estimasi Total Biaya Rombongan:</div>
+                <div class="result-val total-price" id="resTotalBudget">Rp 640.000</div>
+                <div style="margin:14px 0; height:1px; background:var(--border-subtle);"></div>
+                <div style="font-size:0.9rem; color:var(--text-muted);">Estimasi Rata-rata per Orang:</div>
+                <div class="result-val person-price" id="resPerPerson">Rp 320.000 / orang</div>
+                <p style="font-size:0.78rem; color:var(--text-muted); margin-top:10px;">
+                    *Sudah mencakup estimasi tiket masuk objek wisata, makan 3x sehari, bahan bakar minyak (BBM) dan penginapan.
+                </p>
+
+                <!-- ACTION BUTTONS -->
+                <div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;">
+                    <button class="btn-primary-hero" onclick="shareBudgetToWhatsApp()" style="flex:1; min-width:180px; justify-content:center; padding:10px 14px; font-size:0.85rem;">
+                        📲 Bagikan ke WhatsApp
+                    </button>
+                    <button class="btn-secondary-hero" onclick="window.print()" style="flex:1; min-width:160px; justify-content:center; padding:10px 14px; font-size:0.85rem;">
+                        🖨️ Cetak / Simpan PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RINCIAN ESTIMASI BIAYA STANDAR -->
+        <div style="margin-top:40px; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:20px;">
+            <div style="background:var(--bg-card); padding:20px; border-radius:var(--radius-lg); border:1px solid var(--border-subtle);">
+                <div style="font-size:1.8rem; margin-bottom:8px;">🎟️</div>
+                <h4 style="color:#fff; margin-bottom:4px;">Tiket Wisata</h4>
+                <p style="font-size:0.85rem; color:var(--text-secondary);">Rata-rata tiket masuk destinasi di Tanggamus sangat terjangkau berkisar antara Rp 5.000 hingga Rp 20.000.</p>
+            </div>
+            <div style="background:var(--bg-card); padding:20px; border-radius:var(--radius-lg); border:1px solid var(--border-subtle);">
+                <div style="font-size:1.8rem; margin-bottom:8px;">🍲</div>
+                <h4 style="color:#fff; margin-bottom:4px;">Kuliner & Makan</h4>
+                <p style="font-size:0.85rem; color:var(--text-secondary);">Makan santai di warung lokal berkisar Rp 20.000 - Rp 35.000 per porsi dengan porsi ikan laut segar melimpah.</p>
+            </div>
+            <div style="background:var(--bg-card); padding:20px; border-radius:var(--radius-lg); border:1px solid var(--border-subtle);">
+                <div style="font-size:1.8rem; margin-bottom:8px;">🐬</div>
+                <h4 style="color:#fff; margin-bottom:4px;">Sewa Perahu Kiluan</h4>
+                <p style="font-size:0.85rem; color:var(--text-secondary);">Sewa kapal jukung/cadik nelayan untuk melihat lumba-lumba berkisar Rp 250rb - Rp 350rb per perahu (muat 3-4 orang).</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function shareBudgetToWhatsApp() {
+        const days = document.getElementById('calcDays').value;
+        const people = document.getElementById('calcPeople').value;
+        const total = document.getElementById('resTotalBudget').textContent;
+        const perPerson = document.getElementById('resPerPerson').textContent;
+        const staySelect = document.getElementById('calcStay');
+        const stayText = staySelect.options[staySelect.selectedIndex].text;
+        const transSelect = document.getElementById('calcTrans');
+        const transText = transSelect.options[transSelect.selectedIndex].text;
+
+        const msg = encodeURIComponent(
+            `*Rencana Estimasi Biaya Liburan ke Tanggamus* 🌊\n` +
+            `🗓️ Durasi: ${days} Hari\n` +
+            `👥 Rombongan: ${people} Orang\n` +
+            `🏨 Penginapan: ${stayText}\n` +
+            `🚗 Transportasi: ${transText}\n` +
+            `-----------------------------------\n` +
+            `💰 *Total Biaya Rombongan: ${total}*\n` +
+            `👤 *Rata-rata per Orang: ${perPerson}*\n` +
+            `-----------------------------------\n` +
+            `Dihitung via Eksplor Tanggamus (http://localhost:3002/biaya)`
+        );
+
+        window.open('https://api.whatsapp.com/send?text=' + msg, '_blank');
+    }
+</script>
+
+<%- include('../partials/footer') %>

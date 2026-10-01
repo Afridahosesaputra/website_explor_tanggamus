@@ -1,0 +1,144 @@
+<%- include('../partials/header') %>
+
+<div class="page-banner">
+    <span class="section-eyebrow">✦ Tersimpan di SQLite Database</span>
+    <h1 style="font-family:'DM Serif Display',serif; font-size:clamp(2rem, 4vw, 3rem); color:#fff; margin:8px 0 14px;">
+        Ulasan & Testimonial Pengunjung
+    </h1>
+    <p style="color:var(--text-secondary); max-width:680px; margin:0 auto; font-size:1.05rem;">
+        Kesan dan cerita nyata wisatawan dari berbagai penjuru nusantara setelah mengeksplorasi keajaiban alam dan keramahan warga Kabupaten Tanggamus.
+    </p>
+    <div style="margin-top:24px;">
+        <button class="btn-primary-hero" onclick="openReviewModal()">
+            <span>✍️</span>
+            <span>Tulis Ulasan Kamu Sekarang</span>
+        </button>
+    </div>
+</div>
+
+<main style="padding:50px 24px 80px; background:var(--bg-main);">
+    <div class="testimonial-container">
+        <!-- STATISTIK ULASAN -->
+        <div style="background:var(--bg-card); border:1px solid var(--border-glow); border-radius:var(--radius-xl); padding:28px 36px; margin-bottom:44px; display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:20px; box-shadow:var(--shadow-card);">
+            <div style="text-align:center;">
+                <div style="font-size:3rem; font-weight:900; color:var(--blue-neon); text-shadow:0 0 20px var(--blue-neon-glow);">4.8</div>
+                <div style="color:var(--blue-ice); font-weight:600;">⭐⭐⭐⭐⭐</div>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Rating Rata-rata</div>
+            </div>
+            <div style="height:60px; width:1px; background:var(--border-subtle);"></div>
+            <div style="text-align:center;">
+                <div style="font-size:3rem; font-weight:900; color:#fff;"><%= reviews.length %></div>
+                <div style="color:var(--blue-ice); font-weight:600;">Ulasan Terverifikasi</div>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Tabel <code>Review</code> SQLite</div>
+            </div>
+            <div style="height:60px; width:1px; background:var(--border-subtle);"></div>
+            <div style="text-align:center;">
+                <div style="font-size:3rem; font-weight:900; color:#fff;">98%</div>
+                <div style="color:var(--blue-ice); font-weight:600;">Wisatawan Puas</div>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Rekomendasi Positif</div>
+            </div>
+        </div>
+
+        <!-- FILTER RATING BINTANG -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; flex-wrap:wrap; gap:14px;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;" id="reviewFilterChips">
+                <button class="btn-filter active" onclick="filterReviewsByRating('all', this)">
+                    🌟 Semua Bintang (<%= reviews.length %>)
+                </button>
+                <button class="btn-filter" onclick="filterReviewsByRating(5, this)">
+                    ⭐⭐⭐⭐⭐ 5 Bintang (<%= reviews.filter(r => r.rating === 5).length %>)
+                </button>
+                <button class="btn-filter" onclick="filterReviewsByRating(4, this)">
+                    ⭐⭐⭐⭐ 4 Bintang (<%= reviews.filter(r => r.rating === 4).length %>)
+                </button>
+                <button class="btn-filter" onclick="filterReviewsByRating(3, this)">
+                    ⭐⭐⭐ ≤ 3 Bintang (<%= reviews.filter(r => r.rating <= 3).length %>)
+                </button>
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-muted);" id="reviewFilterCount">
+                Menampilkan <strong><%= reviews.length %></strong> ulasan
+            </div>
+        </div>
+
+        <!-- GRID ULASAN -->
+        <div class="testimonial-grid" id="testimonialGrid">
+            <% reviews.forEach(r => { %>
+                <div class="testimonial-card" data-rating="<%= r.rating %>">
+                    <div class="testimonial-stars"><%= '⭐'.repeat(r.rating) %></div>
+                    <p class="testimonial-text">"<%= r.comment %>"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar"><%= r.avatar || 'US' %></div>
+                        <div>
+                            <div class="author-name"><%= r.author %></div>
+                            <div class="author-origin">📍 <%= r.city %></div>
+                        </div>
+                        <div class="author-verified" title="Terverifikasi">✓</div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</main>
+
+<!-- MODAL TULIS ULASAN (SIMPAN KE DATABASE) -->
+<div class="modal" id="reviewModal">
+    <div class="modal-card">
+        <button class="modal-close" onclick="closeReviewModal()">✕</button>
+        <div style="margin-bottom:20px;">
+            <h3 style="font-size:1.4rem; color:#fff; margin-bottom:4px;">✍️ Tulis Ulasan Wisatamu</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted);">Ulasan Anda akan langsung dimasukkan ke database SQLite sistem pariwisata Tanggamus.</p>
+        </div>
+
+        <form id="reviewForm" onsubmit="handleReviewSubmit(event)" style="display:flex; flex-direction:column; gap:16px;">
+            <div>
+                <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:6px;">Nama Lengkap</label>
+                <input type="text" id="revAuthor" required placeholder="Contoh: Rian Hidayat" style="width:100%; padding:10px 14px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:10px; color:#fff;">
+            </div>
+            <div>
+                <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:6px;">Kota Asal</label>
+                <input type="text" id="revCity" required placeholder="Contoh: Palembang / Jakarta" style="width:100%; padding:10px 14px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:10px; color:#fff;">
+            </div>
+            <div>
+                <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:6px;">Rating Bintang</label>
+                <select id="revStars" style="width:100%; padding:10px 14px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:10px; color:#fff;">
+                    <option value="5">⭐⭐⭐⭐⭐ 5 Bintang (Luar Biasa Memukau!)</option>
+                    <option value="4">⭐⭐⭐⭐ 4 Bintang (Sangat Bagus)</option>
+                    <option value="3">⭐⭐⭐ 3 Bintang (Cukup Bagus)</option>
+                </select>
+            </div>
+            <div>
+                <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:6px;">Pengalaman Wisata Kamu</label>
+                <textarea id="revText" required rows="4" placeholder="Ceritakan bagaimana keindahan tempat, keramahan warga, dan fasilitas yang kamu rasakan..." style="width:100%; padding:10px 14px; background:rgba(6,14,34,0.8); border:1px solid var(--border-subtle); border-radius:10px; color:#fff; resize:none;"></textarea>
+            </div>
+            <button type="submit" class="btn-primary-hero" style="justify-content:center; margin-top:8px;">
+                Kirim & Simpan ke Database SQLite
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function filterReviewsByRating(star, btn) {
+        document.querySelectorAll('#reviewFilterChips .btn-filter').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+
+        const cards = document.querySelectorAll('.testimonial-card');
+        let visible = 0;
+
+        cards.forEach(card => {
+            const rating = parseInt(card.dataset.rating || '5', 10);
+            let match = false;
+            if (star === 'all') match = true;
+            else if (star === 3) match = rating <= 3;
+            else match = rating === star;
+
+            card.style.display = match ? '' : 'none';
+            if (match) visible++;
+        });
+
+        const info = document.getElementById('reviewFilterCount');
+        if (info) info.innerHTML = `Menampilkan <strong>${visible}</strong> ulasan`;
+    }
+</script>
+
+<%- include('../partials/footer') %>

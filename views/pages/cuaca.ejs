@@ -1,0 +1,126 @@
+<%- include('../partials/header') %>
+
+<div class="page-banner">
+    <span class="section-eyebrow">🌤️ Satelit Meteorologi Tanggamus</span>
+    <h1 style="font-family:'DM Serif Display',serif; font-size:clamp(2rem, 4vw, 3rem); color:#fff; margin:8px 0 14px;">
+        Prakiraan Cuaca Real-Time Tanggamus
+    </h1>
+    <p style="color:var(--text-secondary); max-width:680px; margin:0 auto; font-size:1.05rem;">
+        Pantau kondisi iklim mikro dari 5 kecamatan sentra pariwisata Tanggamus (pesisir pantai hingga lereng pegunungan) untuk liburan tanpa khawatir hujan mendadak.
+    </p>
+</div>
+
+<main style="padding:40px 24px 80px; background:radial-gradient(ellipse at center, #091a3f 0%, var(--bg-deep) 75%);">
+    <div class="cuaca-container">
+        <!-- REGION SELECTOR TABS -->
+        <div class="cuaca-region-bar">
+            <div class="region-tabs" id="cuacaRegionTabs">
+                <% weatherList.forEach((w, idx) => { %>
+                    <button class="region-tab <%= idx === 0 ? 'active' : '' %>" data-region="<%= w.regionSlug %>">
+                        <span style="font-size:1.3rem;">📍</span>
+                        <span class="region-info">
+                            <span class="region-name"><%= w.regionName %></span>
+                            <span class="region-sub"><%= w.sub %></span>
+                        </span>
+                    </button>
+                <% }) %>
+            </div>
+        </div>
+
+        <!-- MAIN WEATHER CARD -->
+        <div class="cuaca-hero-card" id="cuacaHeroCard">
+            <div class="cuaca-main-top">
+                <div class="cuaca-location-badge">
+                    <div class="live-dot-pulse"></div>
+                    <span>LIVE SATELLITE UPDATE · <span id="cuacaLocationName">Kecamatan Kota Agung, Tanggamus</span></span>
+                </div>
+                <div class="cuaca-actions-top">
+                    <span class="cuaca-update-time" id="cuacaUpdateTime">Diperbarui: Baru Saja</span>
+                    <button class="btn-cuaca-refresh" id="btnCuacaRefresh" title="Segarkan data cuaca">
+                        <span>🔄</span>
+                        <span>Segarkan</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="cuaca-main-grid">
+                <div class="cuaca-temp-box">
+                    <span class="cuaca-icon-large" id="cuacaIconLarge">🌤️</span>
+                    <div>
+                        <div class="cuaca-degrees-wrap">
+                            <span class="cuaca-temp-main" id="cuacaTempMain">29</span>
+                            <span class="cuaca-temp-unit">°C</span>
+                        </div>
+                        <div class="cuaca-condition-text" id="cuacaConditionText">Cerah Berawan</div>
+                        <div class="cuaca-feels-like" id="cuacaFeelsLike">Suhu terasa 31°C · Angin 12 km/j</div>
+                    </div>
+                </div>
+
+                <div class="cuaca-recommend-box" id="cuacaRecommendBox">
+                    <div class="recommend-header">
+                        <span>✨</span>
+                        <span id="recommendTitle">Kondisi Wisata Sangat Baik</span>
+                    </div>
+                    <p class="recommend-desc" id="recommendDesc">Cuaca sangat bersahabat! Kondisi ideal untuk eksplorasi pantai, menikmati pemandangan laut, dan kegiatan fotografi luar ruangan.</p>
+                    <div class="recommend-destinations" id="recommendDestinations">
+                        <span class="rec-tag">🔷 Pantai Gigi Hiu</span>
+                        <span class="rec-tag">🔷 Teluk Kiluan</span>
+                        <span class="rec-tag">🔷 Muara Indah</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- METRICS GRID -->
+            <div class="cuaca-metrics-grid">
+                <div class="cuaca-metric-card">
+                    <div class="metric-icon">💧</div>
+                    <div>
+                        <span class="metric-label">Kelembapan</span>
+                        <span class="metric-val" id="cuacaHumidity">78%</span>
+                    </div>
+                </div>
+                <div class="cuaca-metric-card">
+                    <div class="metric-icon">💨</div>
+                    <div>
+                        <span class="metric-label">Kecepatan Angin</span>
+                        <span class="metric-val" id="cuacaWindSpeed">12 km/j</span>
+                    </div>
+                </div>
+                <div class="cuaca-metric-card">
+                    <div class="metric-icon">☔</div>
+                    <div>
+                        <span class="metric-label">Peluang Hujan</span>
+                        <span class="metric-val" id="cuacaRainChance">15%</span>
+                    </div>
+                </div>
+                <div class="cuaca-metric-card">
+                    <div class="metric-icon">☀️</div>
+                    <div>
+                        <span class="metric-label">Indeks UV</span>
+                        <span class="metric-val" id="cuacaUVIndex">6 (Sedang)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HOURLY TRACK -->
+            <div class="cuaca-hourly-section">
+                <div class="cuaca-sub-header">
+                    <h4>⏰ Prakiraan Cuaca 24 Jam</h4>
+                    <span class="cuaca-sub-hint">Geser untuk melihat jam selanjutnya →</span>
+                </div>
+                <div class="cuaca-hourly-track" id="cuacaHourlyTrack"></div>
+            </div>
+
+            <!-- 5-DAY FORECAST -->
+            <div class="cuaca-daily-section">
+                <div class="cuaca-sub-header">
+                    <h4>📅 Prakiraan 5 Hari ke Depan</h4>
+                    <span class="cuaca-sub-hint">Pembaruan Stasiun Meteorologi Tanggamus</span>
+                </div>
+                <div class="cuaca-daily-grid" id="cuacaDailyGrid"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('../partials/footer') %>

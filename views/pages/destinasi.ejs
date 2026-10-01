@@ -1,0 +1,85 @@
+<%- include('../partials/header') %>
+
+<div class="page-banner">
+    <span class="section-eyebrow">✦ Terhubung SQLite Database</span>
+    <h1 style="font-family:'DM Serif Display',serif; font-size:clamp(2rem, 4vw, 3rem); color:#fff; margin:8px 0 14px;">
+        Katalog Destinasi Wisata Tanggamus
+    </h1>
+    <p style="color:var(--text-secondary); max-width:680px; margin:0 auto; font-size:1.05rem;">
+        Jelajahi surga tersembunyi mulai dari pantai tebing karang samudra, telaga alam, air terjun eksotis, hingga kafe dataran tinggi berhawa sejuk.
+    </p>
+</div>
+
+<main style="padding:50px 24px 80px; background:var(--bg-deep);">
+    <div class="container">
+        <!-- FILTER & CONTROLS -->
+        <section class="controls" aria-label="Filter dan Pencarian">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Cari nama destinasi, kecamatan (Gisting, Kelumbayan, Kota Agung...), atau deskripsi..." autocomplete="off">
+                <button class="search-clear" id="searchClear" style="display:none;" aria-label="Hapus pencarian">✕</button>
+            </div>
+
+            <div class="controls-row">
+                <div class="filter-buttons" id="filterContainer">
+                    <button class="btn-filter active" data-category="Semua">🌍 Semua (<%= destinations.length %>)</button>
+                    <button class="btn-filter" data-category="Nongkrong">☕ Tempat Nongkrong</button>
+                    <button class="btn-filter" data-category="Pantai">🏖️ Pantai</button>
+                    <button class="btn-filter" data-category="Air Terjun">💧 Air Terjun</button>
+                    <button class="btn-filter" data-category="Alam">🌿 Alam</button>
+                    <button class="btn-filter" data-category="Petualangan">⛰️ Petualangan</button>
+                    <button class="btn-filter" data-category="Edukasi">📚 Edukasi</button>
+                    <button class="btn-filter" data-category="Taman Kota">🏙️ Taman Kota</button>
+                </div>
+
+                <div class="view-sort-bar">
+                    <select id="sortSelect" class="sort-select">
+                        <option value="default">🔀 Urutan Default</option>
+                        <option value="rating-desc">⭐ Rating Tertinggi</option>
+                        <option value="price-asc">💰 Harga Termurah</option>
+                        <option value="price-desc">Harga Termahal</option>
+                        <option value="name-asc">🔤 Nama A-Z</option>
+                        <option value="recommend">★ Rekomendasi Utama</option>
+                    </select>
+                    <div class="view-toggle">
+                        <button class="view-btn active" id="viewGrid" title="Tampilan Grid">▦</button>
+                        <button class="view-btn" id="viewList" title="Tampilan List">☰</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="price-filter-row">
+                <span class="price-filter-label">💰 Filter Maksimal Tiket:</span>
+                <div class="price-range-wrapper">
+                    <input type="range" id="priceRange" min="0" max="25000" step="1000" value="25000" class="price-slider">
+                    <span class="price-range-val" id="priceMax">Rp 25.000</span>
+                </div>
+                <span class="price-filter-hint" id="priceHint" style="font-size:0.85rem; color:var(--blue-neon);"></span>
+            </div>
+        </section>
+
+        <div class="results-info" id="resultsInfo">
+            Menampilkan <strong><%= destinations.length %></strong> destinasi wisata Tanggamus
+        </div>
+
+        <!-- GRID CONTAINER -->
+        <div id="destinasi-list" class="grid-container">
+            <!-- Di-render oleh script.js -->
+        </div>
+
+        <div id="no-results" style="display:none; text-align:center; padding:60px 20px; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-subtle); margin-top:20px;">
+            <div style="font-size:3rem; margin-bottom:12px;">🔍</div>
+            <h3 style="color:#fff; margin-bottom:8px;">Destinasi Tidak Ditemukan</h3>
+            <p style="color:var(--text-secondary); margin-bottom:16px;">Tidak ada destinasi wisata yang cocok dengan filter Anda.</p>
+            <button class="btn-primary-hero" onclick="resetFilters()">Reset Filter</button>
+        </div>
+    </div>
+</main>
+
+<script>
+    window.__INITIAL_DATA__ = {
+        destinations: <%- JSON.stringify(destinations) %>
+    };
+</script>
+
+<%- include('../partials/footer') %>

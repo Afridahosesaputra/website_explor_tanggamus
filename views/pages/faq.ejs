@@ -1,0 +1,61 @@
+<%- include('../partials/header') %>
+
+<div class="page-banner">
+    <span class="section-eyebrow">❓ Panduan Akses & Info Praktis</span>
+    <h1 style="font-family:'DM Serif Display',serif; font-size:clamp(2rem, 4vw, 3rem); color:#fff; margin:8px 0 14px;">
+        Pusat Bantuan & FAQ Wisata
+    </h1>
+    <p style="color:var(--text-secondary); max-width:680px; margin:0 auto; font-size:1.05rem;">
+        Kumpulan pertanyaan yang paling sering diajukan wisatawan seputar transportasi, kondisi jalan, sinyal seluler, dan persiapan menjelajahi Kabupaten Tanggamus.
+    </p>
+</div>
+
+<main style="padding:50px 24px 80px; background:var(--bg-deep);">
+    <div class="faq-container">
+        <!-- FAQ ACCORDION -->
+        <div class="faq-accordion" style="margin-bottom:60px;">
+            <% faqs.forEach(f => { %>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span><%= f.question %></span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p><%= f.answer %></p>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+
+        <!-- PANDUAN PENTING SECTION -->
+        <div class="section-header">
+            <span class="section-eyebrow">✦ Checklist Perjalanan</span>
+            <h2 class="section-title">Tips Sebelum Berangkat ke Tanggamus</h2>
+        </div>
+
+        <div class="tips-grid">
+            <div class="tip-card">
+                <div class="tip-icon">🗓️</div>
+                <h4 class="tip-title">Musim Terbaik</h4>
+                <p class="tip-text">Pilih bulan April hingga Oktober untuk menikmati perairan Kiluan yang tenang dan cuaca sejuk cerah tanpa gangguan badai laut.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🚗</div>
+                <h4 class="tip-title">Kondisi Kendaraan</h4>
+                <p class="tip-text">Pastikan rem dan ban kendaraan dalam kondisi prima karena beberapa rute seperti Kelumbayan melewati tanjakan dan turunan perbukitan.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">💵</div>
+                <h4 class="tip-title">Sedia Uang Tunai</h4>
+                <p class="tip-text">Bawa uang tunai rupiah secukupnya untuk pembayaran perahu cadik nelayan dan tiket masuk lokasi wisata alam pesisir.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">📶</div>
+                <h4 class="tip-title">Jaringan Komunikasi</h4>
+                <p class="tip-text">Unduh peta offline terlebih dahulu di Google Maps sebelum bepergian ke daerah pantai terpencil Kelumbayan.</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('../partials/footer') %>

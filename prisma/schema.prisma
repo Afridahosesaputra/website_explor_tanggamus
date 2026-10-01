@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 1. Model Destinasi Wisata Tanggamus
+model Destination {
+  id            Int      @id @default(autoincrement())
+  code          String   @unique // Contoh: DST-01
+  name          String   // Contoh: Pantai Gigi Hiu
+  category      String   // Nongkrong, Pantai, Air Terjun, Alam, Petualangan, Edukasi, Taman Kota
+  location      String   // Contoh: Kecamatan Kelumbayan, Tanggamus
+  district      String   // Kelumbayan, Kota Agung, Gisting, dll.
+  description   String   // Ulasan & deskripsi keindahan
+  ticketPrice   Int      // Tarif tiket masuk (Rp)
+  rating        Float    @default(4.8)
+  reviewCount   Int      @default(0)
+  facilities    String   // JSON array string: '["Spot Foto", "Parkir Area", ...]'
+  image         String   // Nama berkas gambar / path
+  isRecommended Boolean  @default(false)
+  latitude      Float    // Koordinat Peta Interaktif
+  longitude     Float
+  bestTime      String?  // Waktu terbaik berkunjung
+  openHours     String?  // Jam operasional
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  reviews       Review[]
+}
+
+// 2. Model Kategori Wisata
+model Category {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  icon        String
+  description String
+}
+
+// 3. Model Kuliner Khas Tanggamus
+model Culinary {
+  id          Int      @id @default(autoincrement())
+  name        String   // Contoh: Seruit Tanggamus
+  category    String   // Olahan Ikan, Minuman Khas, dll.
+  priceRange  String   // Contoh: Rp 25.000 - Rp 45.000
+  location    String   // Kota Agung & Gisting
+  description String
+  image       String
+  tag         String   // Contoh: Paling Khas, Premium Coffee
+}
+
+// 4. Model Ulasan / Testimonial Pengunjung
+model Review {
+  id            Int          @id @default(autoincrement())
+  destinationId Int?
+  destination   Destination? @relation(fields: [destinationId], references: [id], onDelete: SetNull)
+  author        String       // Nama pengunjung
+  city          String       // Asal kota
+  rating        Int          @default(5) // Skala 1-5
+  comment       String       // Isi ulasan
+  avatar        String?      // Inisial atau foto
+  isVerified    Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+}
+
+// 5. Model Cuaca Real-Time per Wilayah Wisata
+model WeatherInfo {
+  id             Int      @id @default(autoincrement())
+  regionSlug     String   @unique // kota-agung, kelumbayan, gisting, dll.
+  regionName     String   // Kota Agung
+  sub            String   // Pusat & Muara Indah
+  temp           Int      // 29
+  feelsLike      Int      // 31
+  condition      String   // Cerah Berawan
+  icon           String   // 🌤️
+  humidity       Int      // 78
+  windSpeed      Int      // 12
+  rainChance     Int      // 15
+  uvIndex        String   // 6 (Sedang)
+  recommendTitle String   // Kondisi Wisata Sangat Baik
+  recommendDesc  String
+  recDestinations String  // JSON array string
+  hourlyJson     String   // JSON array string
+  dailyJson      String   // JSON array string
+  updatedAt      DateTime @default(now()) @updatedAt
+}
+
+// 6. Model FAQ (Tanya Jawab Wisata)
+model FaqItem {
+  id        Int      @id @default(autoincrement())
+  question  String
+  answer    String
+  category  String?  @default("Umum")
+  order     Int      @default(0)
+}

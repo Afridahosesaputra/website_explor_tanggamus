@@ -1,0 +1,226 @@
+<%- include('partials/header') %>
+
+<!-- HERO SECTION -->
+<header class="hero" id="hero">
+    <div class="hero-bg-batutegi">
+        <img src="/Gambar/hero-gigi-hiu.jpg" alt="Latar Belakang Eksplor Tanggamus" class="hero-video-bg">
+    </div>
+    <div class="hero-aurora"></div>
+    <div class="hero-particles" id="heroParticles"></div>
+    <div class="hero-scenery">
+        <svg class="mountain-layer layer-back" viewBox="0 0 1440 320" preserveAspectRatio="none">
+            <path d="M0,180 L160,165 C320,150,640,120,960,165 C1280,210,1360,250,1400,270 L1440,290 L1440,320 L0,320 Z"></path>
+        </svg>
+        <svg class="mountain-layer layer-mid" viewBox="0 0 1440 320" preserveAspectRatio="none">
+            <path d="M0,220 C240,190,480,140,720,185 C960,230,1200,290,1440,270 L1440,320 L0,320 Z"></path>
+        </svg>
+        <svg class="mountain-layer layer-front" viewBox="0 0 1440 320" preserveAspectRatio="none">
+            <path d="M0,260 C240,240,480,290,720,270 C960,250,1200,290,1440,260 L1440,320 L0,320 Z"></path>
+        </svg>
+    </div>
+
+    <div class="hero-content">
+        <div class="hero-badge">
+            <span class="badge-dot"></span>
+            <span>🌊 Kabupaten Tanggamus, Lampung</span>
+            <span>·</span>
+            <span class="badge-live">AKTIF & TERHUBUNG DATABASE</span>
+        </div>
+        <h1 class="hero-title">
+            <span class="hero-line-1">Temukan Surga</span>
+            <span class="hero-title-accent">Tersembunyi</span>
+            <span class="hero-line-3">di Tanggamus</span>
+        </h1>
+        <p class="hero-subtitle">
+            Jelajahi keindahan alam yang menakjubkan — dari pantai karang eksotis, air terjun memukau, hingga petualangan seru di jantung Lampung yang belum banyak terjamah.
+        </p>
+        <div class="hero-actions">
+            <a href="/destinasi" class="btn-primary-hero" style="text-decoration:none;">
+                <span>🗺️</span>
+                <span>Mulai Eksplorasi Destinasi</span>
+                <span>→</span>
+            </a>
+            <a href="/peta" class="btn-secondary-hero" style="text-decoration:none;">
+                <span>📍</span>
+                <span>Buka Peta Interaktif</span>
+            </a>
+        </div>
+        <div class="hero-trust">
+            <div class="trust-item"><span>⭐</span><span><strong>4.8</strong> Rating Rata-rata</span></div>
+            <div class="trust-divider"></div>
+            <div class="trust-item"><span>🏝️</span><span><strong><%= destinations.length %>+</strong> Destinasi</span></div>
+            <div class="trust-divider"></div>
+            <div class="trust-item"><span>👥</span><span><strong>120K+</strong> Wisatawan</span></div>
+        </div>
+    </div>
+</header>
+
+<!-- MARQUEE / TICKER -->
+<div class="marquee-section" id="marquee-section">
+    <div class="marquee-track" id="marqueeTrack">
+        <div class="marquee-content">
+            <% destinations.forEach(d => { %>
+                <span class="marquee-item">🔷 <%= d.name %></span>
+                <span class="marquee-dot">✦</span>
+            <% }) %>
+            <% destinations.forEach(d => { %>
+                <span class="marquee-item">🔷 <%= d.name %></span>
+                <span class="marquee-dot">✦</span>
+            <% }) %>
+        </div>
+    </div>
+</div>
+
+<!-- STATS SECTION -->
+<section class="stats-section" id="stats">
+    <div class="stats-container">
+        <div class="stat-card" data-target="<%= destinations.length %>" data-suffix="+">
+            <div class="stat-icon-wrap">🏝️</div>
+            <div class="stat-number">0</div>
+            <div class="stat-label">Destinasi & Spot Database</div>
+            <div class="stat-bar"><div class="stat-bar-fill" style="width:95%"></div></div>
+        </div>
+        <div class="stat-card" data-target="4.8" data-decimal="1">
+            <div class="stat-icon-wrap">⭐</div>
+            <div class="stat-number">0</div>
+            <div class="stat-label">Rating Rata-rata</div>
+            <div class="stat-bar"><div class="stat-bar-fill" style="width:96%"></div></div>
+        </div>
+        <div class="stat-card" data-target="120" data-suffix="K+">
+            <div class="stat-icon-wrap">👥</div>
+            <div class="stat-number">0</div>
+            <div class="stat-label">Wisatawan / Tahun</div>
+            <div class="stat-bar"><div class="stat-bar-fill" style="width:80%"></div></div>
+        </div>
+        <div class="stat-card" data-target="<%= categories.length %>">
+            <div class="stat-icon-wrap">☕</div>
+            <div class="stat-number">0</div>
+            <div class="stat-label">Kategori Wisata</div>
+            <div class="stat-bar"><div class="stat-bar-fill" style="width:75%"></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORY SHOWCASE -->
+<section class="kategori-section" id="kategori-section">
+    <div class="kategori-container">
+        <div class="section-header">
+            <span class="section-eyebrow">✦ Temukan Minatmu</span>
+            <h2 class="section-title">Wisata Berdasarkan Kategori</h2>
+            <p class="section-subtitle">Pilih jenis petualangan atau tempat nongkrong favorit yang paling sesuai dengan keinginan liburanmu</p>
+        </div>
+
+        <div class="kategori-grid">
+            <% categories.forEach(cat => { %>
+                <a href="/destinasi" class="kategori-card" style="text-decoration:none;">
+                    <div class="kat-icon"><%= cat.icon %></div>
+                    <h3 class="kat-name"><%= cat.name %></h3>
+                    <p class="kat-desc"><%= cat.description %></p>
+                    <div class="kat-arrow">Lihat →</div>
+                </a>
+            <% }) %>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURED DESTINATION -->
+<section class="featured-section" id="featured-section">
+    <div class="featured-container">
+        <div style="margin-bottom:16px;">
+            <span class="section-eyebrow">★ Rekomendasi Utama</span>
+        </div>
+        <div class="featured-card" id="featuredCard">
+            <div class="featured-img-wrap">
+                <img src="/Gambar/<%= featuredDestination.image %>" alt="<%= featuredDestination.name %>" class="featured-img" onerror="this.src='/Gambar/batutegi.jpg'">
+                <div class="featured-img-overlay"></div>
+            </div>
+            <div class="featured-info">
+                <span class="featured-cat-badge">🔷 <%= featuredDestination.category %></span>
+                <h2 class="featured-title"><%= featuredDestination.name %></h2>
+                <p class="featured-loc">📍 <%= featuredDestination.location %></p>
+                <p class="featured-desc"><%= featuredDestination.description %></p>
+                <div class="featured-meta">
+                    <span class="featured-rating">⭐ <%= featuredDestination.rating %> / 5.0</span>
+                    <span class="featured-price">Tiket: <%= formatRupiah(featuredDestination.ticketPrice) %></span>
+                </div>
+                <button class="featured-btn" onclick="bukaDetail(<%= featuredDestination.id %>)">Lihat Detail <span>→</span></button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PREVIEW MENU-MENU HALAMAN UTAMA -->
+<section style="padding:70px 24px; background:var(--bg-deep); border-top:1px solid var(--border-subtle);">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-eyebrow">🌟 Akses Cepat Menu Halaman</span>
+            <h2 class="section-title">Eksplorasi Lengkap Tanggamus</h2>
+            <p class="section-subtitle">Setiap menu dirancang dalam halaman mandiri untuk pengalaman navigasi yang rapi, cepat, dan menyeluruh</p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px;">
+            <a href="/destinasi" class="kategori-card" style="text-decoration:none; padding:32px 24px; text-align:left;">
+                <div style="font-size:2.4rem; margin-bottom:14px;">🏖️</div>
+                <h3 style="font-size:1.3rem; color:#fff; margin-bottom:8px;">Katalog Destinasi</h3>
+                <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6; margin-bottom:16px;">
+                    Cari, filter harga tiket, dan sortir 10+ destinasi wisata alam, pegunungan, dan kafe di Tanggamus.
+                </p>
+                <span style="color:var(--blue-neon); font-weight:700;">Buka Halaman Destinasi →</span>
+            </a>
+
+            <a href="/peta" class="kategori-card" style="text-decoration:none; padding:32px 24px; text-align:left;">
+                <div style="font-size:2.4rem; margin-bottom:14px;">🗺️</div>
+                <h3 style="font-size:1.3rem; color:#fff; margin-bottom:8px;">Peta Wisata Leaflet</h3>
+                <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6; margin-bottom:16px;">
+                    Navigasi peta interaktif dengan rute jelajah otomatis, koordinat satelit, dan panduan Google Maps.
+                </p>
+                <span style="color:var(--blue-neon); font-weight:700;">Buka Peta Wisata →</span>
+            </a>
+
+            <a href="/cuaca" class="kategori-card" style="text-decoration:none; padding:32px 24px; text-align:left;">
+                <div style="font-size:2.4rem; margin-bottom:14px;">🌤️</div>
+                <h3 style="font-size:1.3rem; color:#fff; margin-bottom:8px;">Prakiraan Cuaca Satelit</h3>
+                <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6; margin-bottom:16px;">
+                    Live satellite update cuaca 5 kecamatan Tanggamus dengan grafik per jam dan prakiraan 5 hari.
+                </p>
+                <span style="color:var(--blue-neon); font-weight:700;">Lihat Cuaca Real-Time →</span>
+            </a>
+
+            <a href="/kuliner" class="kategori-card" style="text-decoration:none; padding:32px 24px; text-align:left;">
+                <div style="font-size:2.4rem; margin-bottom:14px;">🍲</div>
+                <h3 style="font-size:1.3rem; color:#fff; margin-bottom:8px;">Wisata Kuliner Khas</h3>
+                <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6; margin-bottom:16px;">
+                    Seruit Tanggamus, kopi Robusta Gisting, gulai taboh santan rempah, dan aneka jajanan tradisional.
+                </p>
+                <span style="color:var(--blue-neon); font-weight:700;">Jelajahi Kuliner Khas →</span>
+            </a>
+
+            <a href="/biaya" class="kategori-card" style="text-decoration:none; padding:32px 24px; text-align:left;">
+                <div style="font-size:2.4rem; margin-bottom:14px;">🧮</div>
+                <h3 style="font-size:1.3rem; color:#fff; margin-bottom:8px;">Kalkulator Biaya Liburan</h3>
+                <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6; margin-bottom:16px;">
+                    Hitung estimasi bujet liburan rombongan atau solo traveler secara instan dan akurat.
+                </p>
+                <span style="color:var(--blue-neon); font-weight:700;">Hitung Biaya Sekarang →</span>
+            </a>
+
+            <a href="/game" class="kategori-card" style="text-decoration:none; padding:32px 24px; text-align:left;">
+                <div style="font-size:2.4rem; margin-bottom:14px;">🎮</div>
+                <h3 style="font-size:1.3rem; color:#fff; margin-bottom:8px;">Zona Game & Kuis</h3>
+                <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6; margin-bottom:16px;">
+                    Mainkan Kiluan Dolphin Surf 60fps, uji wawasan di kuis penjelajah, dan putar roda hadiah.
+                </p>
+                <span style="color:var(--blue-neon); font-weight:700;">Masuk Zona Game →</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+    window.__INITIAL_DATA__ = {
+        destinations: <%- JSON.stringify(destinations) %>,
+        weather: <%- JSON.stringify(weatherList) %>
+    };
+</script>
+
+<%- include('partials/footer') %>

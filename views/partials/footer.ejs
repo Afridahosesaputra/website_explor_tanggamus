@@ -1,0 +1,113 @@
+    <!-- MODAL DETAIL DESTINASI -->
+    <div id="detailModal" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModalBtn" aria-label="Tutup modal">✕</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX MODAL -->
+    <div class="lightbox-modal" id="lightboxModal" onclick="closeLightbox(event)">
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <button class="lightbox-close" onclick="closeLightbox()" style="position:absolute; top:-40px; right:0; background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer;">✕</button>
+            <button class="lightbox-nav nav-prev" onclick="navigateLightbox(-1)">‹</button>
+            <button class="lightbox-nav nav-next" onclick="navigateLightbox(1)">›</button>
+            <div class="lightbox-img-wrap">
+                <img id="lightboxImg" src="" alt="Foto Galeri Wisata">
+            </div>
+            <div style="margin-top:16px; text-align:left;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <h3 id="lightboxTitle" style="color:#fff; margin:0;"></h3>
+                    <button class="btn-primary-hero" onclick="shareToWhatsAppFromLightbox()" style="padding:8px 16px; font-size:0.8rem;">
+                        📲 Bagikan ke WhatsApp
+                    </button>
+                </div>
+                <p id="lightboxDesc" style="color:var(--text-secondary); margin-top:8px; font-size:0.9rem;"></p>
+                <div style="display:flex; gap:12px; font-size:0.82rem; color:var(--blue-ice); margin-top:8px;">
+                    <span id="lightboxLocation"></span>
+                    <span id="lightboxRating"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WISHLIST DRAWER PANEL -->
+    <div class="wishlist-overlay" id="wishlistOverlay" onclick="toggleWishlistPanel()"></div>
+    <div class="wishlist-panel" id="wishlistPanel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--border-subtle); padding-bottom:14px;">
+            <h3 style="color:#fff; font-size:1.2rem;">❤️ Favorit Saya</h3>
+            <button onclick="toggleWishlistPanel()" style="background:none; border:none; color:#fff; font-size:1.3rem; cursor:pointer;">✕</button>
+        </div>
+        <div id="wishlistItems" style="flex:1; overflow-y:auto;"></div>
+    </div>
+
+    <!-- FOOTER UTAMA -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div>
+                <div class="footer-logo">
+                    <img src="/Gambar/logo-eksplor-tanggamus.png" alt="Logo Eksplor Tanggamus" class="footer-logo-img">
+                    <span>Eksplor <span class="logo-accent">Tanggamus</span></span>
+                </div>
+                <p class="footer-tagline">
+                    Platform panduan pariwisata modern terlengkap untuk mengeksplorasi seluruh pesona tersembunyi Kabupaten Tanggamus, Lampung. Terintegrasi dengan database SQLite, prakiraan cuaca satelit, dan navigasi peta interaktif.
+                </p>
+                <div class="footer-creator-badge">
+                    <span>👨‍💻</span>
+                    <div>
+                        <div style="font-size:0.75rem; color:var(--text-muted);">Dibuat & Dikembangkan oleh</div>
+                        <strong class="creator-badge-name"><%= creator %></strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-links-col">
+                <h4 class="footer-col-title">Halaman Wisata</h4>
+                <ul>
+                    <li><a href="/">Beranda Utama</a></li>
+                    <li><a href="/destinasi">Katalog Destinasi</a></li>
+                    <li><a href="/peta">Peta Wisata Leaflet</a></li>
+                    <li><a href="/cuaca">Cuaca Real-Time</a></li>
+                    <li><a href="/kuliner">Kuliner Khas Tanggamus</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4 class="footer-col-title">Fitur & Panduan</h4>
+                <ul>
+                    <li><a href="/biaya">Kalkulator Biaya Liburan</a></li>
+                    <li><a href="/game">Zona Permainan & Kuis</a></li>
+                    <li><a href="/faq">Pusat Bantuan & FAQ</a></li>
+                    <li><a href="/ulasan">Ulasan Pengunjung</a></li>
+                    <li><a href="/admin">⚙️ Pusat Manajemen Admin</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="footer-col-title">Kontak Informasi</h4>
+                <div class="contact-item">📍 Kota Agung, Kabupaten Tanggamus, Lampung</div>
+                <div class="contact-item">📞 +62 822-0000-0000</div>
+                <div class="contact-item">✉️ info@eksplortanggamus.id</div>
+                <div class="contact-item">🕐 Layanan Informasi: 08.00–21.00 WIB</div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 <strong>Eksplor Tanggamus</strong>. Pesona Surga Wisata Lampung.</p>
+            <p>Dibuat dengan <span style="color:var(--blue-neon);">💙</span> oleh <strong><%= creator %></strong> (Tema Monokromatik 1 Warna Biru)</p>
+        </div>
+    </footer>
+
+    <!-- TOMBOL BACK TO TOP -->
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Kembali ke atas">
+        ↑
+    </button>
+
+    <!-- TOAST NOTIFIKASI -->
+    <div class="toast" id="toast"></div>
+
+    <!-- LEAFLET JS UNTUK PETA -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="/js/script.js"></script>
+</body>
+</html>

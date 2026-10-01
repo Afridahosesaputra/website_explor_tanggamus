@@ -1,0 +1,68 @@
+<%- include('../partials/header') %>
+
+<div class="page-banner">
+    <span class="section-eyebrow">🍲 Warisan Cita Rasa Nusantara</span>
+    <h1 style="font-family:'DM Serif Display',serif; font-size:clamp(2rem, 4vw, 3rem); color:#fff; margin:8px 0 14px;">
+        Wisata Kuliner Khas Tanggamus
+    </h1>
+    <p style="color:var(--text-secondary); max-width:680px; margin:0 auto; font-size:1.05rem;">
+        Cicipi kelezatan olahan ikan segar Teluk Semaka, pedas gurihnya sambal tempoyak durian seruit, hingga harum kopi Robusta pegunungan Gisting.
+    </p>
+</div>
+
+<main style="padding:50px 24px 80px; background:var(--bg-main);">
+    <div class="kuliner-container">
+        <div class="kuliner-grid">
+            <% culinaries.forEach(c => { %>
+                <div class="kuliner-card">
+                    <div class="kuliner-img-wrap">
+                        <span class="kuliner-tag"><%= c.tag %></span>
+                        <img src="/Gambar/<%= c.image %>" alt="<%= c.name %>" loading="lazy" onerror="this.src='/Gambar/batutegi.jpg'">
+                    </div>
+                    <div class="kuliner-body">
+                        <div class="kuliner-meta">
+                            <span class="kuliner-cat">🔷 <%= c.category %></span>
+                            <span class="kuliner-price"><%= c.priceRange %></span>
+                        </div>
+                        <h3><%= c.name %></h3>
+                        <p><%= c.description %></p>
+                        <div class="kuliner-footer">
+                            <span class="kuliner-loc">📍 <%= c.location %></span>
+                            <button class="btn-kuliner-detail" onclick="showToast('Kuliner <%= c.name %> dapat ditemukan di sentra kuliner <%= c.location %>')">
+                                Lokasi & Info →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+
+        <!-- TIPS WISATA KULINER -->
+        <div style="margin-top:60px; background:var(--bg-card); border:1px solid var(--border-glow); border-radius:var(--radius-xl); padding:36px; box-shadow:var(--shadow-card);">
+            <span class="section-eyebrow">💡 Panduan Makan Enak di Tanggamus</span>
+            <h3 style="color:#fff; font-size:1.5rem; margin:6px 0 16px;">Tips Kulineran Seruit & Kopi Robusta</h3>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+                <div style="background:rgba(6,14,34,0.6); padding:20px; border-radius:12px; border:1px solid var(--border-subtle);">
+                    <h4 style="color:var(--blue-neon); margin-bottom:6px;">🐟 Tradisi 'Nyeruit' Bersama</h4>
+                    <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6;">
+                        Seruit paling nikmat dinikmati beramai-ramai. Campurkan sambal terasi terong bulat bakar, tempoyak durian khas, dan suwiran ikan baung atau gabus segar.
+                    </p>
+                </div>
+                <div style="background:rgba(6,14,34,0.6); padding:20px; border-radius:12px; border:1px solid var(--border-subtle);">
+                    <h4 style="color:var(--blue-neon); margin-bottom:6px;">☕ Sensasi Kopi Gisting</h4>
+                    <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6;">
+                        Nikmati secangkir seduhan kopi tubruk Robusta asli di Rest Area Gisting saat suhu malam mulai turun hingga 19°C ditemani pisang goreng hangat.
+                    </p>
+                </div>
+                <div style="background:rgba(6,14,34,0.6); padding:20px; border-radius:12px; border:1px solid var(--border-subtle);">
+                    <h4 style="color:var(--blue-neon); margin-bottom:6px;">🍌 Oleh-Oleh Kue Sekubal</h4>
+                    <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6;">
+                        Bawa pulang Kue Sekubal ketan gurih dan keripik pisang aneka rasa khas Lampung sebagai buah tangan untuk keluarga dan sahabat di rumah.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('../partials/footer') %>
