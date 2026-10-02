@@ -1,0 +1,294 @@
+<%- include('../partials/header') %>
+
+<div class="page-banner">
+    <span class="section-eyebrow">🧭 AI & Smart Route Planning</span>
+    <h1 style="font-family:'DM Serif Display',serif; font-size:clamp(2rem, 4vw, 3rem); color:#fff; margin:8px 0 14px;">
+        Smart Itinerary & Panduan Rencana Wisata
+    </h1>
+    <p style="color:var(--text-secondary); max-width:680px; margin:0 auto; font-size:1.05rem;">
+        Rekomendasi jadwal perjalanan terstruktur jam demi jam untuk memaksimalkan liburanmu di Tanggamus tanpa lelah di jalan dan bebas bingung rute.
+    </p>
+    <div style="margin-top:24px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn-primary-hero" onclick="shareItineraryToWa()">
+            <span>📲</span>
+            <span>Bagikan Jadwal ke WhatsApp</span>
+        </button>
+        <button class="btn-secondary-hero" onclick="window.print()">
+            <span>🖨️</span>
+            <span>Cetak / Simpan PDF</span>
+        </button>
+    </div>
+</div>
+
+<main style="padding:50px 24px 80px; background:var(--bg-main);">
+    <div class="itinerary-container">
+        
+        <!-- PILIHAN DURASI TAB -->
+        <div class="itinerary-tabs">
+            <button class="itinerary-tab-btn active" onclick="switchItinerary('1day', this)">
+                <span>⚡</span> 1 Hari (One Day Tour)
+            </button>
+            <button class="itinerary-tab-btn" onclick="switchItinerary('2days', this)">
+                <span>🌟</span> 2 Hari 1 Malam (Paling Populer)
+            </button>
+            <button class="itinerary-tab-btn" onclick="switchItinerary('3days', this)">
+                <span>👑</span> 3 Hari 2 Malam (Grand Jelajah)
+            </button>
+        </div>
+
+        <!-- PANEL ITINERARY 1 HARI -->
+        <div id="plan-1day" class="itinerary-plan-panel">
+            <div class="itinerary-day-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; border-bottom:1px solid var(--border-subtle); padding-bottom:16px;">
+                    <div>
+                        <span class="section-eyebrow" style="margin:0;">RUTE KILAT TERBAIK</span>
+                        <h2 style="font-family:'DM Serif Display',serif; font-size:1.8rem; color:#fff; margin:4px 0 0;">Hari 1: Eksotis Samudra & Senja Pesisir</h2>
+                    </div>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <span style="font-size:0.85rem; color:var(--text-muted);">Estimasi Biaya:</span>
+                        <strong style="color:var(--blue-neon); font-size:1.1rem;">~Rp 180.000 / orang</strong>
+                    </div>
+                </div>
+
+                <div class="itinerary-timeline">
+                    <div class="timeline-step">
+                        <div class="timeline-dot">1</div>
+                        <div class="timeline-content-box">
+                            <span class="timeline-time-badge">🕒 06.00 - 08.30 WIB</span>
+                            <h3 style="color:#fff; font-size:1.15rem; margin:0 0 6px;">Keberangkatan & Menikmati Sunrise di Muara Indah</h3>
+                            <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin:0 0 10px;">
+                                Tiba di pesisir Kota Agung. Hirup udara segar Teluk Semangka dan berfoto di patung lumba-lumba ikonik dengan latar Gunung Tanggamus.
+                            </p>
+                            <div style="font-size:0.8rem; color:var(--blue-ice);">💡 <strong>Tips:</strong> Parkir luas dan tersedia warung kopi pagi warga lokal.</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <div class="timeline-dot">2</div>
+                        <div class="timeline-content-box">
+                            <span class="timeline-time-badge">🕒 09.00 - 12.00 WIB</span>
+                            <h3 style="color:#fff; font-size:1.15rem; margin:0 0 6px;">Eksplorasi Pantai Karang Gigi Hiu (Pegadungan)</h3>
+                            <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin:0 0 10px;">
+                                Saksikan keajaiban deretan tebing karang runcing menjulang diempas ombak samudra. Surga fotografi lanskap nomor satu di Lampung.
+                            </p>
+                            <div style="font-size:0.8rem; color:var(--blue-ice);">🎟️ Tiket: Rp 10.000 · ⚠️ Gunakan alas kaki anti-selip saat melintasi karang.</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <div class="timeline-dot">3</div>
+                        <div class="timeline-content-box">
+                            <span class="timeline-time-badge">🕒 12.30 - 14.00 WIB</span>
+                            <h3 style="color:#fff; font-size:1.15rem; margin:0 0 6px;">Santap Siang Kuliner Ikan Seruit Khas Tanggamus</h3>
+                            <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin:0 0 10px;">
+                                Istirahat makan siang dengan menu Seruit: ikan laut segar dibakar di atas bara arang, dilumuri sambal terasi tempoyak durian dan lalapan segar.
+                            </p>
+                            <div style="font-size:0.8rem; color:var(--blue-ice);">🍲 Rekomendasi Tempat: Rumah Makan Pesisir Kota Agung (~Rp 35.000/porsi).</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <div class="timeline-dot">4</div>
+                        <div class="timeline-content-box">
+                            <span class="timeline-time-badge">🕒 14.30 - 17.30 WIB</span>
+                            <h3 style="color:#fff; font-size:1.15rem; margin:0 0 6px;">Relaksasi Sejuk di Air Terjun Way Lalaan</h3>
+                            <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin:0 0 10px;">
+                                Menikmati segarnya curahan air pegunungan yang dikelilingi rindangnya pepohonan durian alami sebelum perjalanan kembali pulang.
+                            </p>
+                            <div style="font-size:0.8rem; color:var(--blue-ice);">🎟️ Tiket: Rp 5.000 · Fasilitas: Gazebo, mushola, kamar bilas bersih.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL ITINERARY 2 HARI 1 MALAM -->
+        <div id="plan-2days" class="itinerary-plan-panel" style="display:none;">
+            <!-- HARI 1 -->
+            <div class="itinerary-day-card">
+                <div style="border-bottom:1px solid var(--border-subtle); padding-bottom:14px; margin-bottom:20px;">
+                    <span class="section-eyebrow">HARI PERTAMA</span>
+                    <h2 style="font-family:'DM Serif Display',serif; font-size:1.8rem; color:#fff; margin:4px 0 0;">Petualangan Lumba-Lumba Teluk Kiluan & Laguna Dodo</h2>
+                </div>
+                <div class="itinerary-timeline">
+                    <div class="timeline-step">
+                        <div class="timeline-dot">1</div>
+                        <div class="timeline-content-box">
+                            <span class="timeline-time-badge">🕒 08.00 - 11.30 WIB</span>
+                            <h3 style="color:#fff; font-size:1.1rem; margin:0 0 4px;">Perjalanan ke Teluk Kiluan & Check-in Homestay</h3>
+                            <p style="color:var(--text-secondary); font-size:0.88rem; margin:0;">Melewati panorama perbukitan pesisir Kelumbayan dan beristirahat di tepi laguna.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-dot">2</div>
+                        <div class="timeline-content-box">
+                            <span class="timeline-time-badge">🕒 13.30 - 16.30 WIB</span>
+                            <h3 style="color:#fff; font-size:1.1rem; margin:0 0 4px;">Berenang Alami di Kolam Alami Laguna Gayau & Dodo</h3>
+                            <p style="color:var(--text-secondary); font-size:0.88rem; margin:0;">Kolam batu karang samudra berair toska jernih alami di balik perbukitan Kiluan.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-dot">3</div>
+                        <div class="timeline-content-box">
+                            <span class="timeline-time-badge">🕒 19.00 - 21.00 WIB</span>
+                            <h3 style="color:#fff; font-size:1.1rem; margin:0 0 4px;">Makan Malam Ikan Bakar Nelayan & Api Unggun Pantai</h3>
+                            <p style="color:var(--text-secondary); font-size:0.88rem; margin:0;">Menikmati malam berbintang samudra selatan ditemani ikan bakar segar khas warga lokal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HARI 2 -->
+            <div class="itinerary-day-card">
+                <div style="border-bottom:1px solid var(--border-subtle); padding-bottom:14px; margin-bottom:20px;">
+                    <span class="section-eyebrow">HARI KEDUA</span>
+                    <h2 style="font-family:'DM Serif Display',serif; font-size:1.8rem; color:#fff; margin:4px 0 0;">Jumpa Lumba-Lumba Liar & Udara Sejuk Gisting</h2>
+                </div>
+                <div class="itinerary-timeline">
+                    <div class="timeline-step">
+                        <div class="timeline-dot">4</div>
+                        <div class="timeline-content-box">
+                            <span class="timeline-time-badge">🕒 05.45 - 08.30 WIB</span>
+                            <h3 style="color:#fff; font-size:1.1rem; margin:0 0 4px;">Hunting Kawanan Lumba-Lumba Liar dengan Perahu Jukung</h3>
+                            <p style="color:var(--text-secondary); font-size:0.88rem; margin:0;">Melihat ratusan lumba-lumba hidung botol dan paruh panjang melompat bebas di samudra lepas.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-dot">5</div>
+                        <div class="timeline-content-box">
+                            <span class="timeline-time-badge">🕒 11.00 - 14.30 WIB</span>
+                            <h3 style="color:#fff; font-size:1.1rem; margin:0 0 4px;">Makan Siang & Menyeruput Kopi Robusta Dataran Tinggi Gisting</h3>
+                            <p style="color:var(--text-secondary); font-size:0.88rem; margin:0;">Singgah di kafe dataran tinggi lereng Gunung Tanggamus berhawa sejuk 22°C.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-dot">6</div>
+                        <div class="timeline-content-box">
+                            <span class="timeline-time-badge">🕒 15.00 - 17.00 WIB</span>
+                            <h3 style="color:#fff; font-size:1.1rem; margin:0 0 4px;">Belanja Buah Segar & Kopi di Rest Area Gisting</h3>
+                            <p style="color:var(--text-secondary); font-size:0.88rem; margin:0;">Membeli oleh-oleh pisang muli, kopi robusta bubuk asli, dan keripik khas Lampung.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL ITINERARY 3 HARI 2 MALAM -->
+        <div id="plan-3days" class="itinerary-plan-panel" style="display:none;">
+            <div class="itinerary-day-card">
+                <span class="section-eyebrow">GRAND TOUR EKSPLORASI PENUH</span>
+                <h2 style="font-family:'DM Serif Display',serif; font-size:1.8rem; color:#fff; margin:4px 0 16px;">Ringkasan Ekspedisi 3 Hari 2 Malam</h2>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+                    <div style="background:rgba(6,14,34,0.7); border:1px solid var(--border-glow); border-radius:12px; padding:20px;">
+                        <div style="font-size:1.5rem; margin-bottom:8px;">🌊 HARI 1</div>
+                        <h4 style="color:#fff; margin:0 0 6px;">Pesisir Selatan & Gigi Hiu</h4>
+                        <p style="color:var(--text-secondary); font-size:0.85rem; line-height:1.6; margin:0;">Muara Indah Kota Agung, Pantai Gigi Hiu Pegadungan, dan menginap di homestay pesisir.</p>
+                    </div>
+                    <div style="background:rgba(6,14,34,0.7); border:1px solid var(--border-glow); border-radius:12px; padding:20px;">
+                        <div style="font-size:1.5rem; margin-bottom:8px;">🐬 HARI 2</div>
+                        <h4 style="color:#fff; margin:0 0 6px;">Dolphin Safari Kiluan</h4>
+                        <p style="color:var(--text-secondary); font-size:0.85rem; line-height:1.6; margin:0;">Perahu jukung melihat kawanan lumba-lumba, snorkeling Pulau Kelapa, dan bersantai di laguna.</p>
+                    </div>
+                    <div style="background:rgba(6,14,34,0.7); border:1px solid var(--border-glow); border-radius:12px; padding:20px;">
+                        <div style="font-size:1.5rem; margin-bottom:8px;">⛰️ HARI 3</div>
+                        <h4 style="color:#fff; margin:0 0 6px;">Dam Batutegi & Hawa Sejuk Gisting</h4>
+                        <p style="color:var(--text-secondary); font-size:0.85rem; line-height:1.6; margin:0;">Kemegahan bendungan terbesar Asia Tenggara Batutegi, Air Terjun Way Lalaan, dan belanja oleh-oleh Gisting.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERLENGKAPAN & CHECKLIST WISATA -->
+        <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:32px; margin-top:36px; box-shadow:var(--shadow-card);">
+            <h3 style="color:#fff; font-size:1.3rem; margin:0 0 16px; display:flex; align-items:center; gap:8px;">
+                <span>🎒</span> Checklist Perlengkapan Wisata Tanggamus
+            </h3>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
+                <label style="display:flex; align-items:center; gap:10px; background:rgba(6,14,34,0.6); padding:12px 16px; border-radius:10px; border:1px solid var(--border-subtle); cursor:pointer;">
+                    <input type="checkbox" checked style="accent-color:var(--primary); width:18px; height:18px;">
+                    <span style="color:#fff; font-size:0.88rem;">Kacamata hitam & Sunscreen</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:10px; background:rgba(6,14,34,0.6); padding:12px 16px; border-radius:10px; border:1px solid var(--border-subtle); cursor:pointer;">
+                    <input type="checkbox" checked style="accent-color:var(--primary); width:18px; height:18px;">
+                    <span style="color:#fff; font-size:0.88rem;">Sandal / Sepatu anti-selip</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:10px; background:rgba(6,14,34,0.6); padding:12px 16px; border-radius:10px; border:1px solid var(--border-subtle); cursor:pointer;">
+                    <input type="checkbox" checked style="accent-color:var(--primary); width:18px; height:18px;">
+                    <span style="color:#fff; font-size:0.88rem;">Dry bag & Kantong anti-air</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:10px; background:rgba(6,14,34,0.6); padding:12px 16px; border-radius:10px; border:1px solid var(--border-subtle); cursor:pointer;">
+                    <input type="checkbox" checked style="accent-color:var(--primary); width:18px; height:18px;">
+                    <span style="color:#fff; font-size:0.88rem;">Uang tunai (ATM terbatas di pelosok)</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:10px; background:rgba(6,14,34,0.6); padding:12px 16px; border-radius:10px; border:1px solid var(--border-subtle); cursor:pointer;">
+                    <input type="checkbox" checked style="accent-color:var(--primary); width:18px; height:18px;">
+                    <span style="color:#fff; font-size:0.88rem;">Baju ganti cadangan</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:10px; background:rgba(6,14,34,0.6); padding:12px 16px; border-radius:10px; border:1px solid var(--border-subtle); cursor:pointer;">
+                    <input type="checkbox" checked style="accent-color:var(--primary); width:18px; height:18px;">
+                    <span style="color:#fff; font-size:0.88rem;">Powerbank & Kamera ponsel</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- KONTAK DARURAT & HOTLINE TANGGAMUS -->
+        <div style="background:rgba(37,99,235,0.08); border:1px solid var(--border-glow); border-radius:var(--radius-xl); padding:28px 32px; margin-top:36px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+                <h3 style="color:#fff; font-size:1.2rem; margin:0; display:flex; align-items:center; gap:8px;">
+                    <span>🚨</span> Kontak Darurat & Posko Keamanan Wisata
+                </h3>
+                <span style="font-size:0.8rem; color:var(--blue-ice);">Layanan Siaga 24 Jam</span>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
+                <div style="background:rgba(6,14,34,0.8); padding:14px; border-radius:10px; border:1px solid var(--border-subtle);">
+                    <div style="color:var(--text-muted); font-size:0.75rem;">SAR & KESELAMATAN PANTAI</div>
+                    <div style="color:#fff; font-weight:700; font-size:0.95rem; margin-top:2px;">Pos SAR Tanggamus</div>
+                    <a href="tel:115" style="color:var(--blue-neon); font-size:0.85rem; text-decoration:none; display:inline-block; margin-top:4px;">📞 Telepon: 115 / (0721) 789123</a>
+                </div>
+                <div style="background:rgba(6,14,34,0.8); padding:14px; border-radius:10px; border:1px solid var(--border-subtle);">
+                    <div style="color:var(--text-muted); font-size:0.75rem;">KEPOLISIAN RESOR</div>
+                    <div style="color:#fff; font-weight:700; font-size:0.95rem; margin-top:2px;">Polres Tanggamus</div>
+                    <a href="tel:110" style="color:var(--blue-neon); font-size:0.85rem; text-decoration:none; display:inline-block; margin-top:4px;">📞 Telepon: 110 / (0722) 21110</a>
+                </div>
+                <div style="background:rgba(6,14,34,0.8); padding:14px; border-radius:10px; border:1px solid var(--border-subtle);">
+                    <div style="color:var(--text-muted); font-size:0.75rem;">LAYANAN MEDIS & IGD</div>
+                    <div style="color:#fff; font-weight:700; font-size:0.95rem; margin-top:2px;">RSUD Batin Mangunang</div>
+                    <a href="tel:072221015" style="color:var(--blue-neon); font-size:0.85rem; text-decoration:none; display:inline-block; margin-top:4px;">📞 Telepon: (0722) 21015</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<script>
+    let activeItineraryTab = '1day';
+
+    function switchItinerary(plan, btn) {
+        activeItineraryTab = plan;
+        document.querySelectorAll('.itinerary-tab-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+
+        document.querySelectorAll('.itinerary-plan-panel').forEach(p => p.style.display = 'none');
+        const target = document.getElementById('plan-' + plan);
+        if (target) target.style.display = 'block';
+    }
+
+    function shareItineraryToWa() {
+        let title = 'Rencana Wisata 1 Hari (One Day Tour Tanggamus)';
+        if (activeItineraryTab === '2days') title = 'Rencana Wisata 2 Hari 1 Malam Tanggamus';
+        if (activeItineraryTab === '3days') title = 'Rencana Wisata 3 Hari 2 Malam Tanggamus';
+
+        const msg = encodeURIComponent(
+            `*${title}* 🧭🌊\n` +
+            `Yuk liburan bareng ke Tanggamus, Lampung! Rencana perjalanan jam demi jam lengkap sudah dirancang.\n\n` +
+            `📍 Rute: Muara Indah, Pantai Gigi Hiu, Kuliner Seruit, & Teluk Kiluan.\n` +
+            `Cek jadwal lengkap & navigasinya di:\n` +
+            window.location.href
+        );
+
+        window.open('https://api.whatsapp.com/send?text=' + msg, '_blank');
+    }
+</script>
+
+<%- include('../partials/footer') %>

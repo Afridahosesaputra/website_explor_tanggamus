@@ -55,17 +55,23 @@
                         </div>
                     </div>
                     <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=<%= destination.latitude %>,<%= destination.longitude %>" target="_blank" rel="noopener" class="btn-primary-hero" style="text-decoration:none; padding:10px 20px; font-size:0.9rem;">
-                            🗺️ Rute Google Maps
+                        <button class="btn-primary-hero" onclick="openBookingModal()" style="padding:10px 20px; font-size:0.9rem;">
+                            🎟️ Reservasi Tiket
+                        </button>
+                        <button class="btn-secondary-hero" onclick="openPanorama360('/Gambar/<%= destination.image %>', '<%= destination.name %>')" style="padding:10px 18px; font-size:0.9rem;">
+                            🌐 Virtual 360° Tour
+                        </button>
+                        <button class="btn-secondary-hero" onclick="openQrCodeModal()" style="padding:10px 18px; font-size:0.9rem;">
+                            📱 QR Code
+                        </button>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=<%= destination.latitude %>,<%= destination.longitude %>" target="_blank" rel="noopener" class="btn-secondary-hero" style="text-decoration:none; padding:10px 18px; font-size:0.9rem;">
+                            🗺️ Rute Maps
                         </a>
-                        <button class="btn-secondary-hero" onclick="shareDetailWa()" style="padding:10px 20px; font-size:0.9rem;">
-                            📲 Bagikan ke WhatsApp
+                        <button class="btn-secondary-hero" onclick="shareDetailWa()" style="padding:10px 18px; font-size:0.9rem;">
+                            📲 Bagikan
                         </button>
                         <button class="btn-secondary-hero" onclick="toggleWishlist(event, <%= destination.id %>)" style="padding:10px 18px; font-size:0.9rem;">
-                            ❤️ Simpan Favorit
-                        </button>
-                        <button class="btn-secondary-hero" onclick="window.print()" style="padding:10px 18px; font-size:0.9rem;">
-                            🖨️ Cetak
+                            ❤️ Simpan
                         </button>
                     </div>
                 </div>
@@ -282,18 +288,164 @@
     </div>
 </main>
 
+<!-- MODAL BOOKING & RESERVASI TIKET KE WHATSAPP -->
+<div class="modal" id="modalBooking" style="display:none; align-items:center; justify-content:center;">
+    <div class="modal-card" style="max-width:540px;">
+        <button class="modal-close" onclick="document.getElementById('modalBooking').style.display='none'">✕</button>
+        <div style="font-size:2rem; margin-bottom:6px;">🎟️</div>
+        <h3 style="color:#fff; font-size:1.35rem; margin-bottom:4px;">Reservasi Kunjungan & Tiket</h3>
+        <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:18px;">
+            Pesan tiket masuk dan pemandu lokal <%= destination.name %>. Konfirmasi instan langsung via WhatsApp pengelola.
+        </p>
+
+        <form id="formBooking" onsubmit="handleBookingSubmit(event)" style="display:flex; flex-direction:column; gap:14px; text-align:left;">
+            <div>
+                <label style="display:block; font-size:0.82rem; color:var(--blue-ice); margin-bottom:4px;">Nama Lengkap Pemesan</label>
+                <input type="text" id="bookName" required placeholder="Contoh: Budi Santoso" style="width:100%; padding:10px 14px; background:rgba(6,14,34,0.85); border:1px solid var(--border-subtle); border-radius:8px; color:#fff; font-size:0.9rem;">
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                    <label style="display:block; font-size:0.82rem; color:var(--blue-ice); margin-bottom:4px;">Nomor WhatsApp</label>
+                    <input type="tel" id="bookPhone" required placeholder="0812xxxxxxxx" style="width:100%; padding:10px 14px; background:rgba(6,14,34,0.85); border:1px solid var(--border-subtle); border-radius:8px; color:#fff; font-size:0.9rem;">
+                </div>
+                <div>
+                    <label style="display:block; font-size:0.82rem; color:var(--blue-ice); margin-bottom:4px;">Tanggal Kunjungan</label>
+                    <input type="date" id="bookDate" required style="width:100%; padding:10px 14px; background:rgba(6,14,34,0.85); border:1px solid var(--border-subtle); border-radius:8px; color:#fff; font-size:0.9rem;">
+                </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                    <label style="display:block; font-size:0.82rem; color:var(--blue-ice); margin-bottom:4px;">Jumlah Tiket (Orang)</label>
+                    <input type="number" id="bookCount" min="1" max="50" value="2" oninput="calculateBookingTotal()" style="width:100%; padding:10px 14px; background:rgba(6,14,34,0.85); border:1px solid var(--border-subtle); border-radius:8px; color:#fff; font-size:0.9rem;">
+                </div>
+                <div>
+                    <label style="display:block; font-size:0.82rem; color:var(--blue-ice); margin-bottom:4px;">Waktu Kedatangan</label>
+                    <select id="bookTime" style="width:100%; padding:10px 14px; background:rgba(6,14,34,0.85); border:1px solid var(--border-subtle); border-radius:8px; color:#fff; font-size:0.9rem;">
+                        <option value="Pagi (08.00 - 11.00 WIB)">Pagi (08.00 - 11.00 WIB)</option>
+                        <option value="Siang (11.00 - 14.00 WIB)">Siang (11.00 - 14.00 WIB)</option>
+                        <option value="Sore (14.00 - 17.00 WIB)">Sore (14.00 - 17.00 WIB)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- LAYANAN TAMBAHAN OPSIONAL -->
+            <div style="background:rgba(37,99,235,0.08); border:1px solid var(--border-glow); border-radius:10px; padding:12px 14px;">
+                <span style="font-size:0.82rem; color:var(--blue-ice); font-weight:700; display:block; margin-bottom:8px;">Pilihan Layanan Tambahan:</span>
+                <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; color:#fff; cursor:pointer; margin-bottom:6px;">
+                    <input type="checkbox" id="addonGuide" onchange="calculateBookingTotal()" style="accent-color:var(--primary); width:16px; height:16px;">
+                    <span>Pemandu Wisata Lokal Resmi (+Rp 100.000)</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; color:#fff; cursor:pointer;">
+                    <input type="checkbox" id="addonLunch" onchange="calculateBookingTotal()" style="accent-color:var(--primary); width:16px; height:16px;">
+                    <span>Paket Kuliner Seruit Tanggamus (+Rp 35.000 / orang)</span>
+                </label>
+            </div>
+
+            <!-- TOTAL SUMMARY -->
+            <div style="background:rgba(6,14,34,0.9); border:1px solid var(--border-subtle); border-radius:10px; padding:14px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <span style="font-size:0.75rem; color:var(--text-muted); display:block;">Estimasi Total:</span>
+                    <strong id="bookTotalText" style="font-size:1.3rem; color:var(--blue-neon);"><%= destination.ticketPrice === 0 ? 'Gratis' : formatRupiah(destination.ticketPrice * 2) %></strong>
+                </div>
+                <div style="text-align:right;">
+                    <span style="font-size:0.72rem; color:var(--text-muted); display:block;">Kode Booking:</span>
+                    <code id="bookCodeGen" style="color:#fff; font-size:0.85rem;">TGM-...</code>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary-hero" style="justify-content:center; padding:12px; font-size:0.95rem; margin-top:4px;">
+                📲 Kirim Reservasi ke WhatsApp Resmi
+            </button>
+        </form>
+    </div>
+</div>
+
 <script id="__detail_dest_data__" type="application/json">
 <%- JSON.stringify({
     id: destination.id,
     name: destination.name,
     location: destination.location,
     rating: destination.rating,
+    ticketPrice: destination.ticketPrice,
     latitude: destination.latitude,
     longitude: destination.longitude
 }) %>
 </script>
 <script>
     const currentDest = JSON.parse(document.getElementById('__detail_dest_data__').textContent);
+
+    function openBookingModal() {
+        const m = document.getElementById('modalBooking');
+        if (m) {
+            m.style.display = 'flex';
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const dateInput = document.getElementById('bookDate');
+            if (dateInput && !dateInput.value) {
+                dateInput.value = tomorrow.toISOString().split('T')[0];
+            }
+            calculateBookingTotal();
+        }
+    }
+
+    function calculateBookingTotal() {
+        const count = Math.max(1, parseInt(document.getElementById('bookCount')?.value || '1', 10));
+        const pricePerPerson = currentDest.ticketPrice || 0;
+        let total = count * pricePerPerson;
+
+        const hasGuide = document.getElementById('addonGuide')?.checked;
+        const hasLunch = document.getElementById('addonLunch')?.checked;
+
+        if (hasGuide) total += 100000;
+        if (hasLunch) total += (35000 * count);
+
+        const totalEl = document.getElementById('bookTotalText');
+        if (totalEl) {
+            totalEl.textContent = total === 0 ? 'Gratis' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(total);
+        }
+
+        const codeEl = document.getElementById('bookCodeGen');
+        if (codeEl && (!codeEl.dataset.generatedCode)) {
+            const randomCode = 'TGM-' + currentDest.id + '-' + Math.floor(1000 + Math.random() * 9000);
+            codeEl.dataset.generatedCode = randomCode;
+            codeEl.textContent = randomCode;
+        }
+    }
+
+    function handleBookingSubmit(e) {
+        e.preventDefault();
+        const name = document.getElementById('bookName').value;
+        const phone = document.getElementById('bookPhone').value;
+        const date = document.getElementById('bookDate').value;
+        const count = document.getElementById('bookCount').value;
+        const time = document.getElementById('bookTime').value;
+        const total = document.getElementById('bookTotalText').textContent;
+        const code = document.getElementById('bookCodeGen').dataset.generatedCode || 'TGM-BOOK';
+
+        const hasGuide = document.getElementById('addonGuide').checked ? '✓ Pemandu Lokal Resmi' : '-';
+        const hasLunch = document.getElementById('addonLunch').checked ? '✓ Paket Seruit Tanggamus' : '-';
+
+        const msg = encodeURIComponent(
+            `*RESERVASI TIKET WISATA TANGGAMUS* 🌊\n` +
+            `-----------------------------------\n` +
+            `📌 *Kode Booking:* ${code}\n` +
+            `📍 *Destinasi:* ${currentDest.name} (${currentDest.location})\n` +
+            `🗓️ *Rencana Tanggal:* ${date} (${time})\n` +
+            `👤 *Nama Pemesan:* ${name}\n` +
+            `📱 *WhatsApp:* ${phone}\n` +
+            `👥 *Jumlah Pengunjung:* ${count} Orang\n` +
+            `✨ *Pemandu Lokal:* ${hasGuide}\n` +
+            `🍲 *Paket Makan:* ${hasLunch}\n` +
+            `-----------------------------------\n` +
+            `💰 *Estimasi Total:* ${total}\n` +
+            `-----------------------------------\n` +
+            `Halo Admin/Pengelola Wisata Tanggamus, mohon konfirmasi ketersediaan tiket dan pemandu untuk jadwal kami di atas. Terima kasih!`
+        );
+
+        window.open('https://api.whatsapp.com/send?text=' + msg, '_blank');
+        document.getElementById('modalBooking').style.display = 'none';
+        showToast('📲 Formulir berhasil dialihkan ke WhatsApp Pengelola!');
+    }
 
     function shareDetailWa() {
         const text = encodeURIComponent(`Yuk liburan ke ${currentDest.name} di ${currentDest.location}, Tanggamus! ⭐ Rating: ${currentDest.rating}. Cek info lengkapnya di: ` + window.location.href);

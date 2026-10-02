@@ -1784,6 +1784,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Global Shortcut Ctrl + K untuk Spotlight Search
+    window.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            openSpotlightSearch();
+        }
+        if (e.key === 'Escape') {
+            closeSpotlightSearch();
+            closePanorama360();
+        }
+    });
+
     // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -1813,3 +1825,126 @@ window.closeSpotlightSearch = closeSpotlightSearch;
 window.toggleAudioPopover = toggleAudioPopover;
 window.selectAmbienceSound = selectAmbienceSound;
 window.stopAmbienceSound = stopAmbienceSound;
+
+// =========================================
+// VIRTUAL 360° PANORAMA VIEWER HELPER
+// =========================================
+let isDraggingPanorama = false;
+let startXPanorama = 0;
+let currentPosPanorama = -75;
+
+function openPanorama360(imgSrc, title) {
+    let modal = document.getElementById('panoramaModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'panoramaModal';
+        modal.className = 'panorama-modal';
+        modal.innerHTML = `
+            <div style="position:absolute; top:24px; left:24px; right:24px; display:flex; justify-content:space-between; align-items:center; z-index:10;">
+                <div>
+                    <span style="font-size:0.8rem; color:var(--blue-neon); font-weight:700;">🌐 VIRTUAL 360° TOUR INTERAKTIF</span>
+                    <h3 id="panoramaTitle" style="color:#fff; margin:2px 0 0; font-size:1.3rem;"></h3>
+                </div>
+                <button onclick="closePanorama360()" style="background:rgba(255,255,255,0.1); border:1px solid var(--border-subtle); color:#fff; padding:8px 16px; border-radius:var(--radius-pill); cursor:pointer; font-weight:700;">✕ Tutup</button>
+            </div>
+            <div class="panorama-stage" id="panoramaStage">
+                <img id="panoramaImg" class="panorama-img" src="" alt="Panorama">
+                <div style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:rgba(2,6,23,0.75); border:1px solid var(--border-glow); padding:6px 16px; border-radius:var(--radius-pill); font-size:0.8rem; color:var(--blue-ice); pointer-events:none;">
+                    👆 Geser kursor mouse atau usap layar ke kanan/kiri untuk melihat pemandangan 360°
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        const stage = modal.querySelector('#panoramaStage');
+        const img = modal.querySelector('#panoramaImg');
+
+        stage.addEventListener('mousedown', e => {
+            isDraggingPanorama = true;
+            startXPanorama = e.clientX;
+        });
+
+        window.addEventListener('mouseup', () => { isDraggingPanorama = false; });
+
+        window.addEventListener('mousemove', e => {
+            if (!isDraggingPanorama) return;
+            const delta = (e.clientX - startXPanorama) * 0.2;
+            currentPosPanorama = Math.min(0, Math.max(-150, currentPosPanorama + delta));
+            img.style.left = `${currentPosPanorama}%`;
+            startXPanorama = e.clientX;
+        });
+
+        stage.addEventListener('touchstart', e => {
+            if (e.touches.length === 1) {
+                isDraggingPanorama = true;
+                startXPanorama = e.touches[0].clientX;
+            }
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => { isDraggingPanorama = false; });
+
+        window.addEventListener('touchmove', e => {
+            if (!isDraggingPanorama || e.touches.length !== 1) return;
+            const delta = (e.touches[0].clientX - startXPanorama) * 0.3;
+            currentPosPanorama = Math.min(0, Math.max(-150, currentPosPanorama + delta));
+            img.style.left = `${currentPosPanorama}%`;
+            startXPanorama = e.touches[0].clientX;
+        }, { passive: true });
+    }
+
+    document.getElementById('panoramaTitle').textContent = title || 'Panorama Wisata Tanggamus';
+    const imgEl = document.getElementById('panoramaImg');
+    imgEl.src = imgSrc;
+    currentPosPanorama = -75;
+    imgEl.style.left = '-75%';
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closePanorama360() {
+    const modal = document.getElementById('panoramaModal');
+    if (modal) modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// =========================================
+// QR CODE GENERATOR WISATA
+// =========================================
+function openQrCodeModal() {
+    let modal = document.getElementById('qrCodeModal');
+    const currentUrl = window.location.href;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(currentUrl)}&color=25-99-235&bgcolor=2-6-23`;
+
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'qrCodeModal';
+        modal.className = 'modal';
+        modal.style.display = 'none';
+        modal.innerHTML = `
+            <div class="modal-card" style="max-width:400px; text-align:center;">
+                <button class="modal-close" onclick="document.getElementById('qrCodeModal').style.display='none'">✕</button>
+                <div style="font-size:2rem; margin-bottom:8px;">📱</div>
+                <h3 style="color:#fff; font-size:1.25rem; margin-bottom:6px;">QR Code Destinasi Wisata</h3>
+                <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:18px;">Pindai dengan kamera smartphone untuk langsung membuka panduan destinasi ini.</p>
+                <div style="background:#020617; border:2px solid var(--border-glow); padding:16px; border-radius:16px; display:inline-block; margin-bottom:18px; box-shadow:0 0 20px var(--blue-neon-glow);">
+                    <img id="qrCodeImg" src="${qrUrl}" alt="QR Code" style="width:200px; height:200px; display:block;">
+                </div>
+                <div style="display:flex; gap:10px; justify-content:center;">
+                    <a id="qrDownloadBtn" href="${qrUrl}" download="qrcode-tanggamus.png" target="_blank" rel="noopener" class="btn-primary-hero" style="text-decoration:none; padding:8px 16px; font-size:0.85rem;">
+                        📥 Buka / Unduh Gambar QR
+                    </a>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    } else {
+        document.getElementById('qrCodeImg').src = qrUrl;
+        document.getElementById('qrDownloadBtn').href = qrUrl;
+    }
+    modal.style.display = 'flex';
+}
+
+window.openPanorama360 = openPanorama360;
+window.closePanorama360 = closePanorama360;
+window.openQrCodeModal = openQrCodeModal;

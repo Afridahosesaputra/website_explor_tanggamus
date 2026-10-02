@@ -227,8 +227,75 @@ router.get('/ulasan', async (req, res) => {
   }
 });
 
-// 10. HALAMAN ADMIN MANAJEMEN DATABASE
-router.get('/admin', async (req, res) => {
+// Middleware Proteksi Admin
+function checkAdminAuth(req, res, next) {
+  const cookies = req.headers.cookie || '';
+  if (cookies.includes('admin_auth=authenticated_tanggamus_2026')) {
+    return next();
+  }
+  return res.redirect('/login?error=auth_required');
+}
+
+// 10. HALAMAN ITINERARY & SMART TRIP PLANNER
+router.get('/itinerary', async (req, res) => {
+  try {
+    const destinations = await prisma.destination.findMany({ orderBy: { rating: 'desc' } });
+    const culinaries = await prisma.culinary.findMany();
+
+    res.render('pages/itinerary', {
+      title: 'Smart Itinerary Planner Tanggamus — Rencana Perjalanan Wisata',
+      currentPage: 'itinerary',
+      destinations: parseDestinations(destinations),
+      culinaries
+    });
+  } catch (error) {
+    console.error('Error rendering itinerary page:', error);
+    res.status(500).send('Gagal memuat rencana perjalanan: ' + error.message);
+  }
+});
+
+// 11. HALAMAN LOGIN ADMIN
+router.get('/login', (req, res) => {
+  const cookies = req.headers.cookie || '';
+  if (cookies.includes('admin_auth=authenticated_tanggamus_2026')) {
+    return res.redirect('/admin');
+  }
+  const error = req.query.error || '';
+  const isLogout = req.query.logout === '1';
+
+  res.render('pages/login', {
+    title: 'Login Pengelola Database — Eksplor Tanggamus',
+    currentPage: 'admin',
+    error,
+    isLogout
+  });
+});
+
+router.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  const validUser = process.env.ADMIN_USER || 'admin';
+  const validPass = process.env.ADMIN_PASS || 'tanggamus2026';
+
+  if (username === validUser && password === validPass) {
+    res.setHeader('Set-Cookie', 'admin_auth=authenticated_tanggamus_2026; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400');
+    return res.redirect('/admin');
+  }
+
+  res.render('pages/login', {
+    title: 'Login Pengelola Database — Eksplor Tanggamus',
+    currentPage: 'admin',
+    error: 'invalid_credentials',
+    isLogout: false
+  });
+});
+
+router.get('/logout', (req, res) => {
+  res.setHeader('Set-Cookie', 'admin_auth=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0');
+  res.redirect('/login?logout=1');
+});
+
+// 12. HALAMAN ADMIN MANAJEMEN DATABASE (DIPROTEKSI LOGIN)
+router.get('/admin', checkAdminAuth, async (req, res) => {
   try {
     const destinations = await prisma.destination.findMany({
       orderBy: { id: 'desc' },

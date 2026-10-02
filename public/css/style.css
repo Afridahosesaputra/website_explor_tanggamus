@@ -3137,3 +3137,325 @@ body {
         background: #fff !important;
     }
 }
+
+/* =========================================
+   SPOTLIGHT SEARCH MODAL (CTRL + K)
+   ========================================= */
+.spotlight-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 12vh;
+    z-index: 99999;
+    animation: spotlightFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spotlight-overlay.active {
+    display: flex;
+}
+
+@keyframes spotlightFadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.spotlight-card {
+    width: 100%;
+    max-width: 680px;
+    background: rgba(6, 14, 34, 0.95);
+    border: 1px solid var(--border-glow);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 25px 60px -15px rgba(37, 99, 235, 0.35), 0 0 0 1px rgba(56, 189, 248, 0.2);
+    overflow: hidden;
+}
+
+.spotlight-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: rgba(37, 99, 235, 0.08);
+}
+
+.spotlight-header input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+.spotlight-header input::placeholder {
+    color: var(--text-muted);
+}
+
+.spotlight-esc {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.spotlight-results {
+    max-height: 420px;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.spotlight-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+}
+
+.spotlight-item:hover, .spotlight-item.focused {
+    background: rgba(37, 99, 235, 0.2);
+    border-color: var(--border-glow);
+    transform: translateX(4px);
+}
+
+.spotlight-item-thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid var(--border-subtle);
+}
+
+.spotlight-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.spotlight-item-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.spotlight-item-meta {
+    font-size: 0.78rem;
+    color: var(--blue-ice);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+.spotlight-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: rgba(2, 6, 23, 0.6);
+    border-top: 1px solid var(--border-subtle);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.spotlight-footer kbd {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--blue-ice);
+}
+
+/* =========================================
+   ITINERARY & SMART TRIP PLANNER
+   ========================================= */
+.itinerary-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.itinerary-tabs {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+}
+
+.itinerary-tab-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    padding: 12px 24px;
+    border-radius: var(--radius-pill);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.itinerary-tab-btn:hover {
+    border-color: var(--blue-neon);
+    color: #fff;
+}
+
+.itinerary-tab-btn.active {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
+    color: #fff;
+    border-color: var(--blue-neon);
+    box-shadow: 0 0 20px var(--blue-neon-glow);
+}
+
+.itinerary-day-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow-card);
+}
+
+.itinerary-timeline {
+    position: relative;
+    padding-left: 32px;
+    margin-top: 24px;
+}
+
+.itinerary-timeline::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    left: 11px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--blue-neon) 0%, rgba(37,99,235,0.2) 100%);
+}
+
+.timeline-step {
+    position: relative;
+    margin-bottom: 28px;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -32px;
+    top: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bg-deep);
+    border: 2px solid var(--blue-neon);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: #fff;
+    box-shadow: 0 0 10px var(--blue-neon-glow);
+}
+
+.timeline-content-box {
+    background: rgba(6, 14, 34, 0.7);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: all 0.2s;
+}
+
+.timeline-content-box:hover {
+    border-color: var(--blue-neon);
+    background: rgba(37, 99, 235, 0.08);
+}
+
+.timeline-time-badge {
+    display: inline-block;
+    background: rgba(37, 99, 235, 0.2);
+    border: 1px solid var(--border-glow);
+    color: var(--blue-neon);
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+/* =========================================
+   PANORAMA 360 VIEWER
+   ========================================= */
+.panorama-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.95);
+    z-index: 100000;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.panorama-modal.active {
+    display: flex;
+}
+
+.panorama-stage {
+    width: 90vw;
+    max-width: 1100px;
+    height: 65vh;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    position: relative;
+    border: 2px solid var(--border-glow);
+    box-shadow: 0 0 40px var(--blue-neon-glow);
+    cursor: grab;
+    background: #000;
+}
+
+.panorama-stage:active {
+    cursor: grabbing;
+}
+
+.panorama-img {
+    width: 250%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    left: -75%;
+    top: 0;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition: transform 0.05s linear;
+}
+
+/* =========================================
+   LOGIN ADMIN UI
+   ========================================= */
+.login-box {
+    max-width: 440px;
+    margin: 80px auto;
+    padding: 40px 32px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-glow);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-glow);
+    text-align: center;
+}
+

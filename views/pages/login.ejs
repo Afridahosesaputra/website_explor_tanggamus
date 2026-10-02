@@ -1,0 +1,64 @@
+<%- include('../partials/header') %>
+
+<div class="page-banner">
+    <span class="section-eyebrow">🔒 Area Terbatas Pengelola</span>
+    <h1 style="font-family:'DM Serif Display',serif; font-size:clamp(2rem, 4vw, 3rem); color:#fff; margin:8px 0 14px;">
+        Masuk ke Panel Database SQLite
+    </h1>
+    <p style="color:var(--text-secondary); max-width:680px; margin:0 auto; font-size:1.05rem;">
+        Autentikasi administrator untuk mengelola data destinasi wisata, memantau ulasan wisatawan, dan melakukan sinkronisasi database Prisma ORM.
+    </p>
+</div>
+
+<main style="padding:40px 24px 80px; background:var(--bg-main);">
+    <div class="login-box">
+        <div style="font-size:3rem; margin-bottom:12px;">🛡️</div>
+        <h2 style="font-family:'DM Serif Display',serif; font-size:1.6rem; color:#fff; margin-bottom:6px;">Autentikasi Admin</h2>
+        <p style="color:var(--text-secondary); font-size:0.88rem; margin-bottom:24px;">Silakan masukkan username dan kata sandi pengelola.</p>
+
+        <% if (error === 'invalid_credentials') { %>
+            <div style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#fca5a5; padding:12px; border-radius:10px; font-size:0.85rem; margin-bottom:20px; text-align:left;">
+                ⚠️ <strong>Login Gagal:</strong> Username atau kata sandi tidak cocok.
+            </div>
+        <% } else if (error === 'auth_required') { %>
+            <div style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); color:#fde68a; padding:12px; border-radius:10px; font-size:0.85rem; margin-bottom:20px; text-align:left;">
+                🔒 Anda harus masuk terlebih dahulu sebelum mengakses halaman manajemen database.
+            </div>
+        <% } else if (isLogout) { %>
+            <div style="background:rgba(37,99,235,0.15); border:1px solid var(--border-glow); color:var(--blue-ice); padding:12px; border-radius:10px; font-size:0.85rem; margin-bottom:20px; text-align:left;">
+                👋 Anda telah berhasil keluar dari sesi admin.
+            </div>
+        <% } %>
+
+        <form action="/login" method="POST" style="display:flex; flex-direction:column; gap:16px; text-align:left;">
+            <div>
+                <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:6px; font-weight:600;">Username Pengelola</label>
+                <input type="text" name="username" id="loginUser" required placeholder="Contoh: admin" style="width:100%; padding:12px 14px; background:rgba(6,14,34,0.85); border:1px solid var(--border-subtle); border-radius:10px; color:#fff; font-size:0.95rem;">
+            </div>
+            <div>
+                <label style="display:block; font-size:0.85rem; color:var(--blue-ice); margin-bottom:6px; font-weight:600;">Kata Sandi</label>
+                <input type="password" name="password" id="loginPass" required placeholder="••••••••" style="width:100%; padding:12px 14px; background:rgba(6,14,34,0.85); border:1px solid var(--border-subtle); border-radius:10px; color:#fff; font-size:0.95rem;">
+            </div>
+
+            <button type="submit" class="btn-primary-hero" style="justify-content:center; padding:12px; font-size:1rem; margin-top:8px;">
+                🚀 Masuk ke Panel Admin
+            </button>
+        </form>
+
+        <div style="margin-top:24px; padding-top:18px; border-top:1px solid var(--border-subtle); text-align:center;">
+            <span style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:8px;">Akun Demo Pengujian & Presentasi:</span>
+            <button type="button" onclick="isiKredensialDemo()" class="btn-secondary-hero" style="padding:6px 14px; font-size:0.8rem; margin:0 auto;">
+                ⚡ Klik untuk Isi Otomatis (admin / tanggamus2026)
+            </button>
+        </div>
+    </div>
+</main>
+
+<script>
+    function isiKredensialDemo() {
+        document.getElementById('loginUser').value = 'admin';
+        document.getElementById('loginPass').value = 'tanggamus2026';
+    }
+</script>
+
+<%- include('../partials/footer') %>
