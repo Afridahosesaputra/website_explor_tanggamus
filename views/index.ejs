@@ -216,11 +216,11 @@
     </div>
 </section>
 
+<script id="__initial_index_data__" type="application/json">
+<%- JSON.stringify({ destinations, weather: weatherList }) %>
+</script>
 <script>
-    window.__INITIAL_DATA__ = {
-        destinations: <%- JSON.stringify(destinations) %>,
-        weather: <%- JSON.stringify(weatherList) %>
-    };
+    window.__INITIAL_DATA__ = JSON.parse(document.getElementById('__initial_index_data__').textContent);
 </script>
 
 <%- include('partials/footer') %>

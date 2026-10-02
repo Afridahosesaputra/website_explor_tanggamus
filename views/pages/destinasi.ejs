@@ -76,9 +76,12 @@
     </div>
 </main>
 
+<script id="__initial_destinations__" type="application/json">
+<%- JSON.stringify(destinations) %>
+</script>
 <script>
     window.__INITIAL_DATA__ = {
-        destinations: <%- JSON.stringify(destinations) %>
+        destinations: JSON.parse(document.getElementById('__initial_destinations__').textContent)
     };
 </script>
 

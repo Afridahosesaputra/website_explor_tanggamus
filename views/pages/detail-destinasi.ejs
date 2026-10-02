@@ -282,9 +282,21 @@
     </div>
 </main>
 
+<script id="__detail_dest_data__" type="application/json">
+<%- JSON.stringify({
+    id: destination.id,
+    name: destination.name,
+    location: destination.location,
+    rating: destination.rating,
+    latitude: destination.latitude,
+    longitude: destination.longitude
+}) %>
+</script>
 <script>
+    const currentDest = JSON.parse(document.getElementById('__detail_dest_data__').textContent);
+
     function shareDetailWa() {
-        const text = encodeURIComponent("Yuk liburan ke <%= destination.name %> di <%= destination.location %>, Tanggamus! ⭐ Rating: <%= destination.rating %>. Cek info lengkapnya di: " + window.location.href);
+        const text = encodeURIComponent(`Yuk liburan ke ${currentDest.name} di ${currentDest.location}, Tanggamus! ⭐ Rating: ${currentDest.rating}. Cek info lengkapnya di: ` + window.location.href);
         window.open('https://api.whatsapp.com/send?text=' + text, '_blank');
     }
 
@@ -318,7 +330,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         if (typeof L !== 'undefined') {
             const miniMap = L.map('detailMiniMap', {
-                center: [<%= destination.latitude %>, <%= destination.longitude %>],
+                center: [currentDest.latitude, currentDest.longitude],
                 zoom: 14,
                 scrollWheelZoom: false
             });
@@ -332,13 +344,13 @@
 
             const icon = L.divIcon({
                 className: 'custom-map-icon-wrapper',
-                html: `<div class="custom-map-pin">🔷</div>`,
+                html: '<div class="custom-map-pin">🔷</div>',
                 iconSize: [38, 38],
                 iconAnchor: [19, 19]
             });
 
-            L.marker([<%= destination.latitude %>, <%= destination.longitude %>], { icon })
-                .bindPopup(`<strong><%= destination.name %></strong><br><%= destination.location %>`)
+            L.marker([currentDest.latitude, currentDest.longitude], { icon })
+                .bindPopup(`<strong>${currentDest.name}</strong><br>${currentDest.location}`)
                 .addTo(miniMap)
                 .openPopup();
         }

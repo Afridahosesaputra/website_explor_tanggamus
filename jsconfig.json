@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "lib": ["DOM", "DOM.Iterable", "WebWorker", "ScriptHost", "ES2022"],
+    "checkJs": false
+  },
+  "exclude": ["node_modules"]
+}

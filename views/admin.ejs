@@ -183,10 +183,10 @@
                                 <td>⭐ <%= d.rating %></td>
                                 <td>
                                     <div style="display:flex; gap:6px;">
-                                        <button class="btn-action-edit" onclick='bukaModalEdit(<%- JSON.stringify(d).replace(/'/g, "\\'") %>)'>
+                                        <button class="btn-action-edit" onclick="bukaModalEdit(<%= d.id %>)">
                                             ✏️ Edit
                                         </button>
-                                        <button class="btn-action-del" onclick="hapusDestinasi(<%= d.id %>, '<%= d.name %>')">
+                                        <button class="btn-action-del" onclick="hapusDestinasi(<%= d.id %>)">
                                             🗑️ Hapus
                                         </button>
                                     </div>
@@ -355,7 +355,12 @@
     <!-- TOAST NOTIFICATION -->
     <div class="toast" id="toast"></div>
 
+    <script id="adminDestinationsJson" type="application/json">
+    <%- JSON.stringify(destinations) %>
+    </script>
     <script>
+        const destinationsData = JSON.parse(document.getElementById('adminDestinationsJson').textContent);
+
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.textContent = msg;
@@ -374,7 +379,11 @@
         }
 
         // Buka Modal Edit dengan Data Terisi
-        function bukaModalEdit(dest) {
+        function bukaModalEdit(param) {
+            const dest = (typeof param === 'object' && param !== null)
+                ? param
+                : destinationsData.find(item => item.id === Number(param));
+            if (!dest) return;
             document.getElementById('editId').value = dest.id;
             document.getElementById('editName').value = dest.name || '';
             document.getElementById('editCategory').value = dest.category || 'Alam';
@@ -456,6 +465,10 @@
         }
 
         async function hapusDestinasi(id, name) {
+            if (!name) {
+                const found = destinationsData.find(item => item.id === Number(id));
+                name = found ? found.name : 'Destinasi';
+            }
             if (!confirm(`Apakah Anda yakin ingin menghapus "${name}" dari database?`)) return;
 
             try {
